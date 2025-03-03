@@ -35,10 +35,14 @@ export interface Artwork {
     date_display: string;
     artist_display: string;
     place_of_origin: string;
+    description: string;
+    short_description: string;
     dimensions: string;
     dimensions_detail: DimensionDetail[];
     medium_display: string;
+    inscriptions: string | null;
     credit_line: string;
+    catalogue_display: string;
     publication_history: string | null;
     exhibition_history: string | null;
     provenance_text: string | null;
@@ -57,4 +61,8 @@ export interface Artwork {
     term_titles: string[];
     classification_titles: string[];
     material_titles: string[];
+    config: {
+        iiif_url: string;
+        website_url: string;
+    };
 }

@@ -1,3 +1,4 @@
+import '@/components/ui/pagination.css'
 import * as React from "react"
 import {
   ChevronLeftIcon,

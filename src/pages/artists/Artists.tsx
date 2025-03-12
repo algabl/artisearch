@@ -1,9 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import axios from "axios";
-import { Artwork } from "@/types/artwork";
+import SearchBar from "@/components/SearchBar";
 import SearchResult from "@/components/SearchResult";
-import { BASE_URL } from "@/lib/api";
-import { Spinner } from "@/components/ui/spinner";
 import {
     Pagination,
     PaginationContent,
@@ -13,99 +9,64 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import SearchBar from "@/components/SearchBar";
+import { Spinner } from "@/components/ui/spinner";
+import { BASE_URL } from "@/lib/api";
+import { Artist } from "@/types/artist";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useBreadcrumbs } from "@/context/BreadcrumbContext";
+import { Link } from "react-router-dom";
 
-export default function Home() {
-    const [data, setData] = useState<Artwork[]>([]);
-    const [imageData, setImageData] = useState<{ [key: number]: string }>({});
+export default function Artists() {
+    const [data, setData] = useState<Artist[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(() => {
         const savedPage = localStorage.getItem("currentPage");
         return savedPage ? parseInt(savedPage, 10) : 1;
     });
     const [totalPages, setTotalPages] = useState(0);
-    // const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const { pushCrumb, popCrumb } = useBreadcrumbs();
 
-    const fetchImageIds = useCallback(async (data: Artwork[]) => {
-        if (data.length === 0) {
-            return;
-        }
-        const ids = data.map((artwork) => artwork.id);
-        const url = `${BASE_URL}artworks/?ids=${ids.join(",")}&fields=id,title,image_id`;
-        axios
-            .get(url)
-            .then((response) => {
-                const images = response.data.data.reduce((acc: Record<number, string>, item: any) => {
-                    acc[item.id] = item.image_id;
-                    return acc;
-                }, {});
-
-                setImageData(images);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    useEffect(() => {
+        pushCrumb({ label: "Artists", path: `/artists` });
+        return () => {
+            popCrumb();
+        };
     }, []);
 
     useEffect(() => {
-        axios
-            .get("https://api.artic.edu/api/v1/artworks")
-            .then((response) => {
-                console.log(response.data);
-                setData(response.data.data);
-                setLoading(false);
-            })
-            .catch(() => {
-                // setError(error);
-                setLoading(false);
-            });
-    }, []);
+        const fetchArtists = async () => {
+            setLoading(true);
+            try {
+                const url = searchQuery ? `${BASE_URL}artists/search?q=${searchQuery}` : `${BASE_URL}artists?page=${currentPage}&limit=12`;
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [currentPage]);
-
-    useEffect(() => {
-        setLoading(true);
-        axios
-            .get(`${BASE_URL}artworks?page=${currentPage}&limit=12`)
-            .then((response) => {
+                const response = await axios.get(url);
                 setData(response.data.data);
                 setTotalPages(Math.ceil(response.data.pagination.total / response.data.pagination.limit));
+            } catch (error) {
+                console.error("Error fetching artists:", error);
+            } finally {
                 setLoading(false);
-            })
-            .catch(() => {
-                // setError(error);
-                setLoading(false);
-            });
-    }, [currentPage]);
+            }
+        };
 
-    useEffect(() => {
-        fetchImageIds(data);
-    }, [fetchImageIds, data]);
+        fetchArtists();
+        window.scrollTo(0, 0);
+    }, [currentPage, searchQuery]);
 
     useEffect(() => {
         localStorage.setItem("currentPage", currentPage.toString());
     }, [currentPage]);
 
     const handleSearch = (query: string) => {
-        setLoading(true);
-        axios
-            .get(`${BASE_URL}artworks/search?q=${query}`)
-            .then((response) => {
-                setData(response.data.data);
-                setTotalPages(Math.ceil(response.data.pagination.total / response.data.pagination.limit));
-                setLoading(false);
-            })
-            .catch(() => {
-                // setError(error);
-                setLoading(false);
-            });
+        setSearchQuery(query);
+        setCurrentPage(1);
     };
 
     return (
-        <div className="container-fluid mx-auto px-4 py-3">
-            <SearchBar onSearch={handleSearch} placeholder="Search for artwork..." className="mb-4 mx-auto" />
+        <div className="container mx-auto px-4 py-3">
+            <SearchBar onSearch={handleSearch} placeholder="Search for artist..." className="mb-4 mx-auto" />
             {loading ? (
                 <div className="flex items-center justify-center h-screen">
                     <Spinner />
@@ -113,12 +74,12 @@ export default function Home() {
             ) : (
                 <>
                     <div className="flex flex-wrap justify-center gap-4">
-                        {data.map((artwork) => {
-                            if (imageData[artwork.id] === null) {
-                                return null;
-                            } else {
-                                return <SearchResult key={artwork.id} data={{ ...artwork, image_id: imageData[artwork.id] }} />;
-                            }
+                        {data.map((artist) => {
+                            return (
+                                <Link to={`/artists/${artist.id}`} key={artist.id}>
+                                    {artist.title}
+                                </Link>
+                            );
                         })}
                     </div>
                     <Pagination className="my-10">

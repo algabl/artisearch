@@ -23,14 +23,14 @@ export default function SearchResult({ data }: SearchResultProps) {
             // setLoading(false);
         };
 
-        img.onerror = (error) => {
-            console.error("Failed to load image:", error);
+        img.onerror = () => {
+            // console.error("Failed to load image:", error);
             // setLoading(false);
         };
     }, [data.image_id]);
 
     const handleClick = () => {
-        navigate(`/artwork/${data.id}`);
+        navigate(`/artworks/${data.id}`);
     };
 
     return (

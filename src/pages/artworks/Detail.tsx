@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Download } from "lucide-react";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useBreadcrumbs } from "@/context/BreadcrumbContext";
+import { Link } from "react-router-dom";
 
 interface Config {
     iiif_url: string;
@@ -15,6 +17,7 @@ export default function Page() {
     const { id } = useParams();
     const [artwork, setArtwork] = useState<Artwork | null>(null);
     const [config, setConfig] = useState<Config | null>(null);
+    const { pushCrumb, popCrumb } = useBreadcrumbs();
 
     useEffect(() => {
         // Fetch artwork by id
@@ -24,7 +27,14 @@ export default function Page() {
 
             setConfig(response.data.config);
         });
-    }, [id]);
+    }, []);
+
+    useEffect(() => {
+        pushCrumb({ label: artwork?.title ?? "Artwork", path: `/artwork/${id}` });
+        return () => {
+            popCrumb();
+        };
+    }, [artwork]);
 
     const handleDownload = async (artwork: Artwork, config: Config) => {
         try {
@@ -80,6 +90,11 @@ export default function Page() {
                 <div className="w-full md:w-1/2 space-y-4">
                     <h1 className="text-3xl font-bold">{artwork.title}</h1>
                     {/* Add more artwork details here */}
+                    <Link to={`/artists/${artwork.artist_id}`}>{artwork.artist_title}</Link>
+                    <p className="text-lg">{artwork.date_display}</p>
+                    <p className="text-lg">{artwork.medium_display}</p>
+                    <p className="text-lg">{artwork.dimensions}</p>
+                    <p className="text-lg">{artwork.credit_line}</p>
                 </div>
             </div>
         </div>

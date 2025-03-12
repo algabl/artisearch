@@ -2,17 +2,16 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Artwork } from "@/types/artwork";
-import { useRouter } from "next/navigation";
-// import Image from "next/image";
+import { useNavigate } from "react-router-dom";
 
 interface SearchResultProps {
     data: Artwork;
 }
 
 export default function SearchResult({ data }: SearchResultProps) {
-    const [imageUrl, setImageUrl] = useState<string | null>(data.thumbnail.lqip);
+    const [imageUrl, setImageUrl] = useState<string | null>(data?.thumbnail?.lqip);
     const [loading, setLoading] = useState(true);
-    const router = useRouter();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const highResUrl = `https://www.artic.edu/iiif/2/${data.image_id}/full/843,/0/default.jpg`;
@@ -31,7 +30,7 @@ export default function SearchResult({ data }: SearchResultProps) {
     }, [data.image_id]);
 
     const handleClick = () => {
-        router.push(`/artwork/${data.id}`);
+        navigate(`/artwork/${data.id}`);
     };
 
     return (

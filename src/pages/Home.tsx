@@ -23,7 +23,7 @@ export default function Home() {
         return savedPage ? parseInt(savedPage, 10) : 1;
     });
     const [totalPages, setTotalPages] = useState(0);
-    const [error, setError] = useState(null);
+    // const [error, setError] = useState(null);
 
     const fetchImageIds = useCallback(async (data: Artwork[]) => {
         if (data.length === 0) {
@@ -55,7 +55,7 @@ export default function Home() {
                 setLoading(false);
             })
             .catch((error) => {
-                setError(error);
+                // setError(error);
                 setLoading(false);
             });
     }, []);
@@ -74,7 +74,7 @@ export default function Home() {
                 setLoading(false);
             })
             .catch((error) => {
-                setError(error);
+                // setError(error);
                 setLoading(false);
             });
     }, [currentPage]);
@@ -108,7 +108,10 @@ export default function Home() {
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
-                            <PaginationPrevious onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} />
+                            <PaginationPrevious
+                                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                // disabled={currentPage === 1}
+                            />
                         </PaginationItem>
 
                         {currentPage > 1 && (
@@ -134,7 +137,7 @@ export default function Home() {
                         <PaginationItem>
                             <PaginationNext
                                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                disabled={currentPage === totalPages}
+                                // disabled={currentPage === totalPages}
                             />
                         </PaginationItem>
                     </PaginationContent>

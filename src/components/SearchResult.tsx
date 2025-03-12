@@ -10,7 +10,7 @@ interface SearchResultProps {
 
 export default function SearchResult({ data }: SearchResultProps) {
     const [imageUrl, setImageUrl] = useState<string | null>(data?.thumbnail?.lqip);
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,12 +20,12 @@ export default function SearchResult({ data }: SearchResultProps) {
         img.src = highResUrl;
         img.onload = () => {
             setImageUrl(highResUrl);
-            setLoading(false);
+            // setLoading(false);
         };
 
         img.onerror = (error) => {
             console.error("Failed to load image:", error);
-            setLoading(false);
+            // setLoading(false);
         };
     }, [data.image_id]);
 

@@ -54,7 +54,7 @@ export default function Home() {
                 setData(response.data.data);
                 setLoading(false);
             })
-            .catch((error) => {
+            .catch(() => {
                 // setError(error);
                 setLoading(false);
             });
@@ -73,7 +73,7 @@ export default function Home() {
                 setTotalPages(Math.ceil(response.data.pagination.total / response.data.pagination.limit));
                 setLoading(false);
             })
-            .catch((error) => {
+            .catch(() => {
                 // setError(error);
                 setLoading(false);
             });

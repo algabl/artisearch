@@ -14,7 +14,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <ToastProvider />
             <div className="flex flex-col min-h-screen">
                 <div className="border-b bg-white dark:bg-gray-950 sticky top-0 z-10">
-                    <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+                    <div className="container-fluid mx-auto px-4 py-3 flex items-center justify-between">
                         <div className="font-bold text-xl">ArtiSearch</div>
                         <nav className="flex space-x-4">
                             <Button variant="ghost">Dashboard</Button>

@@ -13,6 +13,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import SearchBar from "@/components/SearchBar";
 
 export default function Home() {
     const [data, setData] = useState<Artwork[]>([]);
@@ -87,62 +88,78 @@ export default function Home() {
         localStorage.setItem("currentPage", currentPage.toString());
     }, [currentPage]);
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Spinner />
-            </div>
-        );
-    } else {
-        return (
-            <div className="container-fluid mx-auto px-4 py-3">
-                <div className="flex flex-wrap justify-center gap-4">
-                    {data.map((artwork) => {
-                        if (imageData[artwork.id] === null) {
-                            return null;
-                        } else {
-                            return <SearchResult key={artwork.id} data={{ ...artwork, image_id: imageData[artwork.id] }} />;
-                        }
-                    })}
+    const handleSearch = (query: string) => {
+        setLoading(true);
+        axios
+            .get(`${BASE_URL}artworks/search?q=${query}`)
+            .then((response) => {
+                setData(response.data.data);
+                setTotalPages(Math.ceil(response.data.pagination.total / response.data.pagination.limit));
+                setLoading(false);
+            })
+            .catch(() => {
+                // setError(error);
+                setLoading(false);
+            });
+    };
+
+    return (
+        <div className="container-fluid mx-auto px-4 py-3">
+            <SearchBar onSearch={handleSearch} placeholder="Search for artwork..." className="mb-4 mx-auto" />
+            {loading ? (
+                <div className="flex items-center justify-center h-screen">
+                    <Spinner />
                 </div>
-                <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious
-                                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                                // disabled={currentPage === 1}
-                            />
-                        </PaginationItem>
-
-                        {currentPage > 1 && (
+            ) : (
+                <>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        {data.map((artwork) => {
+                            if (imageData[artwork.id] === null) {
+                                return null;
+                            } else {
+                                return <SearchResult key={artwork.id} data={{ ...artwork, image_id: imageData[artwork.id] }} />;
+                            }
+                        })}
+                    </div>
+                    <Pagination className="my-10">
+                        <PaginationContent>
                             <PaginationItem>
-                                <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
+                                <PaginationPrevious
+                                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                    // disabled={currentPage === 1}
+                                />
                             </PaginationItem>
-                        )}
 
-                        {currentPage > 2 && <PaginationEllipsis />}
+                            {currentPage > 1 && (
+                                <PaginationItem>
+                                    <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
+                                </PaginationItem>
+                            )}
 
-                        <PaginationItem>
-                            <PaginationLink isActive>{currentPage}</PaginationLink>
-                        </PaginationItem>
+                            {currentPage > 2 && <PaginationEllipsis />}
 
-                        {currentPage < totalPages - 1 && <PaginationEllipsis />}
-
-                        {currentPage < totalPages && (
                             <PaginationItem>
-                                <PaginationLink onClick={() => setCurrentPage(totalPages)}>{totalPages}</PaginationLink>
+                                <PaginationLink isActive>{currentPage}</PaginationLink>
                             </PaginationItem>
-                        )}
 
-                        <PaginationItem>
-                            <PaginationNext
-                                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                // disabled={currentPage === totalPages}
-                            />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            </div>
-        );
-    }
+                            {currentPage < totalPages - 1 && <PaginationEllipsis />}
+
+                            {currentPage < totalPages && (
+                                <PaginationItem>
+                                    <PaginationLink onClick={() => setCurrentPage(totalPages)}>{totalPages}</PaginationLink>
+                                </PaginationItem>
+                            )}
+
+                            <PaginationItem>
+                                <PaginationNext
+                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                    // disabled={currentPage === totalPages}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </>
+            )}
+        </div>
+    );
 }

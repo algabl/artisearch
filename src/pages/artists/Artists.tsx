@@ -26,12 +26,18 @@ export default function Artists() {
     });
     const [totalPages, setTotalPages] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
-    const { pushCrumb, popCrumb } = useBreadcrumbs();
+    const { popCrumb, setCrumbs } = useBreadcrumbs();
 
     useEffect(() => {
-        pushCrumb({ label: "Artists", path: `/artists` });
+        setCrumbs([
+            { label: "Home", path: "/" },
+            { label: "Artists", path: `/artists` },
+        ]);
         return () => {
-            popCrumb();
+            const isNavigatingToArtist = location.pathname.startsWith("/artists/");
+            if (!isNavigatingToArtist) {
+                popCrumb();
+            }
         };
     }, []);
 

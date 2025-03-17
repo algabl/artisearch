@@ -1,12 +1,13 @@
 import { Artwork } from "@/types/artwork";
 import { useCallback, useEffect, useState } from "react";
-import { BASE_URL } from "@/lib/api";
+import { BASE_URL, fetchData } from "@/lib/api";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { Artist } from "@/types/artist";
 import SearchResult from "@/components/SearchResult";
+import { encode } from "punycode";
 
 export default function Page() {
     const { id } = useParams();
@@ -19,37 +20,44 @@ export default function Page() {
     useEffect(() => {
         console.log("Fetching artist data");
         console.log(id);
-        // Fetch artwork by id
-        axios.get(`${BASE_URL}artists/${id}`).then((response) => {
-            console.log(response.data);
-            setArtist(response.data.data);
-        });
 
-        axios
-            .get(`${BASE_URL}artworks/search`, {
-                params: {
-                    q: "",
+        const fetchArtist = async () => {
+            setLoading(true);
+            try {
+                const response = await fetchData(`artists/${id}`);
+                setArtist(response.data);
+                const query = {
                     query: {
                         terms: {
-                            artist_id: [id],
+                            artist_ids: [id],
                         },
                     },
-                    limit: 12,
-                },
-            })
-            .then((response) => {
-                console.log(response.data);
-                setArtworks(response.data.data);
-                fetchImageIds(response.data.data);
-            });
+                };
+
+                axios.post(`${BASE_URL}artworks/search`, query).then((response) => {
+                    console.log(response.data.data);
+                    setArtworks(response.data.data);
+                    fetchImageIds(response.data.data);
+                });
+            } catch (error) {
+                console.error("Error fetching artist:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchArtist();
     }, [id]);
 
     useEffect(() => {
-        pushCrumb({ label: artist?.title ?? "Artist", path: `/artist/${id}` });
+        if (!artist) return;
+        pushCrumb({ label: artist.title ?? "Artist", path: `/artists/${id}` });
         return () => {
-            popCrumb();
+            const isNavigatingToArtwork = location.pathname.startsWith("/artworks/");
+            if (!isNavigatingToArtwork) {
+                popCrumb();
+            }
         };
-    }, [artist]);
+    }, [id, artist]);
 
     const fetchImageIds = useCallback(async (artworks: Artwork[]) => {
         if (artworks.length === 0) return;

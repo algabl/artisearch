@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { Artwork } from "@/types/artwork";
 import SearchResult from "@/components/SearchResult";
-import { BASE_URL } from "@/lib/api";
+import { BASE_URL, fetchData } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import {
     Pagination,
@@ -18,8 +18,10 @@ import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "react-router-dom";
 
 export default function Artworks() {
+    const location = useLocation();
     const [data, setData] = useState<Artwork[]>([]);
     const [imageData, setImageData] = useState<{ [key: number]: string }>({});
     const [loading, setLoading] = useState(true);
@@ -30,12 +32,22 @@ export default function Artworks() {
     const [totalPages, setTotalPages] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
     // const [error, setError] = useState(null);
-    const { pushCrumb, popCrumb } = useBreadcrumbs();
+    const { popCrumb, setCrumbs } = useBreadcrumbs();
 
     useEffect(() => {
-        pushCrumb({ label: "Artworks", path: `/artworks` });
+        setCrumbs([
+            { label: "Home", path: "/" },
+            { label: "Artworks", path: `/artworks` },
+        ]);
         return () => {
-            popCrumb();
+            const isNavigatingToArtwork = location.pathname.startsWith("/artworks") && location.pathname !== "/artworks";
+            console.log(location.pathname);
+            if (!isNavigatingToArtwork) {
+                console.log("Popping crumb");
+                popCrumb();
+            } else {
+                console.log("Not popping crumb");
+            }
         };
     }, []);
 
@@ -44,8 +56,9 @@ export default function Artworks() {
 
         try {
             const ids = artworks.map((artwork) => artwork.id);
-            const response = await axios.get(`${BASE_URL}artworks/?ids=${ids.join(",")}&fields=id,title,image_id`);
-            const images = response.data.data.reduce((acc: Record<number, string>, item: any) => {
+            const response = await fetchData(`artworks/?ids=${ids.join(",")}&fields=id,title,image_id`);
+            console.log(response.data);
+            const images = response.data.reduce((acc: Record<number, string>, item: any) => {
                 acc[item.id] = item.image_id;
                 return acc;
             }, {});
@@ -59,12 +72,12 @@ export default function Artworks() {
         const fetchArtworks = async () => {
             setLoading(true);
             try {
-                const url = searchQuery ? `${BASE_URL}artworks/search?q=${searchQuery}` : `${BASE_URL}artworks?page=${currentPage}&limit=12`;
+                const url = searchQuery ? `artworks/search?q=${searchQuery}` : `artworks?page=${currentPage}&limit=12`;
 
-                const response = await axios.get(url);
-                setData(response.data.data);
-                setTotalPages(Math.ceil(response.data.pagination.total / response.data.pagination.limit));
-                await fetchImageIds(response.data.data);
+                const response = await fetchData(url);
+                setData(response.data);
+                setTotalPages(Math.ceil(response.pagination.total / response.pagination.limit));
+                await fetchImageIds(response.data);
             } catch (error) {
                 console.error("Error fetching artworks:", error);
             } finally {

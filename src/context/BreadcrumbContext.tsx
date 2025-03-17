@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface Crumb {
     label: string;
@@ -15,29 +15,25 @@ interface BreadcrumbContextType {
 const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(undefined);
 
 export function BreadcrumbProvider({ children }: { children: ReactNode }) {
-    const [crumbs, setCrumbs] = useState<Crumb[]>([
-        { label: 'Home', path: '/' }
-    ]);
+    const [crumbs, setCrumbs] = useState<Crumb[]>([{ label: "Home", path: "/" }]);
 
     const pushCrumb = (crumb: Crumb) => {
-        setCrumbs(prev => [...prev, crumb]);
+        setCrumbs((prev) => [...prev, crumb]);
+        console.log("pushing crumb", crumb);
+        console.log("crumbs", crumbs);
     };
 
     const popCrumb = () => {
-        setCrumbs(prev => prev.slice(0, -1));
+        setCrumbs((prev) => prev.slice(0, -1));
     };
 
-    return (
-        <BreadcrumbContext.Provider value={{ crumbs, setCrumbs, pushCrumb, popCrumb }}>
-            {children}
-        </BreadcrumbContext.Provider>
-    );
+    return <BreadcrumbContext.Provider value={{ crumbs, setCrumbs, pushCrumb, popCrumb }}>{children}</BreadcrumbContext.Provider>;
 }
 
 export function useBreadcrumbs() {
     const context = useContext(BreadcrumbContext);
     if (context === undefined) {
-        throw new Error('useBreadcrumbs must be used within a BreadcrumbProvider');
+        throw new Error("useBreadcrumbs must be used within a BreadcrumbProvider");
     }
     return context;
 }

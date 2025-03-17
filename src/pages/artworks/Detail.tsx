@@ -4,10 +4,12 @@ import { BASE_URL } from "@/lib/api";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
-import { Download } from "lucide-react";
+import { Download, Heart, HeartOff } from "lucide-react";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface Config {
     iiif_url: string;
@@ -18,6 +20,7 @@ export default function Page() {
     const [artwork, setArtwork] = useState<Artwork | null>(null);
     const [config, setConfig] = useState<Config | null>(null);
     const { pushCrumb, popCrumb } = useBreadcrumbs();
+    const { isFavorite, toggleFavorite } = useFavorites();
 
     useEffect(() => {
         // Fetch artwork by id
@@ -30,6 +33,7 @@ export default function Page() {
     }, []);
 
     useEffect(() => {
+        if (!artwork) return;
         pushCrumb({ label: artwork?.title ?? "Artwork", path: `/artwork/${id}` });
         return () => {
             popCrumb();
@@ -71,26 +75,46 @@ export default function Page() {
                         height={843}
                         alt={artwork.thumbnail.alt_text}
                     />
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <button
-                                    onClick={() => handleDownload(artwork, config)}
-                                    className="flex items-center space-x-2 mt-4 hover:text-primary cursor-pointer"
-                                >
-                                    <Download className="h-4 w-4" />
-                                </button>
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom">
-                                <p>Download</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <div className="flex justify-end space-x-4">
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button
+                                        onClick={() => handleDownload(artwork, config)}
+                                        className="flex items-center space-x-2 mt-4 hover:text-primary cursor-pointer"
+                                    >
+                                        <Download className="h-4 w-4" />
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>Download</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button
+                                        onClick={() => toggleFavorite(artwork.id)}
+                                        className="flex items-center space-x-2 mt-4 hover:text-primary cursor-pointer"
+                                    >
+                                        {isFavorite(artwork.id) ? <Heart className="h-4 w-4 fill-current" /> : <Heart className="h-4 w-4" />}{" "}
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>{isFavorite(artwork.id) ? "Remove from favorites" : "Add to favorites"}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
                 </div>
                 <div className="w-full md:w-1/2 space-y-4">
                     <h1 className="text-3xl font-bold">{artwork.title}</h1>
                     {/* Add more artwork details here */}
-                    <Link to={`/artists/${artwork.artist_id}`}>{artwork.artist_title}</Link>
+
+                    <Button variant="secondary">
+                        <Link to={`/artists/${artwork.artist_id}`}>{artwork.artist_title} </Link>
+                    </Button>
                     <p className="text-lg">{artwork.date_display}</p>
                     <p className="text-lg">{artwork.medium_display}</p>
                     <p className="text-lg">{artwork.dimensions}</p>

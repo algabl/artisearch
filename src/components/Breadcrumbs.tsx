@@ -1,6 +1,6 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
-import { useBreadcrumbs } from "@/context/BreadcrumbContext";
+import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { cn } from "@/lib/utils";
 
 export default function Breadcrumbs() {

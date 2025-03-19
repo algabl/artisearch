@@ -4,14 +4,17 @@ import { BASE_URL, fetchData } from "@/lib/api";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
-import { useBreadcrumbs } from "@/context/BreadcrumbContext";
+import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { Artist } from "@/types/artist";
 import SearchResult from "@/components/SearchResult";
-import { encode } from "punycode";
 
-export default function Page() {
+interface ArtistDetailProps {
+    artist: Artist;
+}
+
+export default function Detail(props: ArtistDetailProps) {
     const { id } = useParams();
-    const [artist, setArtist] = useState<Artist | null>(null);
+    const [artist, setArtist] = useState(props.artist);
     const [artworks, setArtworks] = useState<Artwork[]>([]);
     const [imageData, setImageData] = useState<{ [key: number]: string }>({});
     const [loading, setLoading] = useState(true);
@@ -45,7 +48,10 @@ export default function Page() {
                 setLoading(false);
             }
         };
-        fetchArtist();
+
+        if (!artist) {
+            fetchArtist();
+        }
     }, [id]);
 
     useEffect(() => {
@@ -58,6 +64,7 @@ export default function Page() {
             }
         };
     }, [id, artist]);
+
 
     const fetchImageIds = useCallback(async (artworks: Artwork[]) => {
         if (artworks.length === 0) return;

@@ -14,7 +14,7 @@ import { BASE_URL } from "@/lib/api";
 import { Artist } from "@/types/artist";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useBreadcrumbs } from "@/context/BreadcrumbContext";
+import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { Link } from "react-router-dom";
 
 export default function Artists() {

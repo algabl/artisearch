@@ -18,7 +18,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <BreadcrumbProvider>
                 <GlobalErrorBoundary>
                     <ToastProvider />
-                    <div className="flex flex-col min-h-screen">
+                    <div className="flex flex-col h-full overflow-hidden">
                         <div className="border-b bg-white dark:bg-gray-950 sticky top-0 z-10">
                             <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                                 <div className="font-bold text-xl">ArtiSearch</div>
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                         <div className="container ms-4 px-4">
                             <Breadcrumbs />
                         </div>
-                        <main className="flex-grow">{children}</main>
+                        <main className="flex-grow h-full">{children}</main>
                     </div>
                 </GlobalErrorBoundary>
             </BreadcrumbProvider>

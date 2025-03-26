@@ -45,7 +45,7 @@ export default function Artists() {
         const fetchArtists = async () => {
             setLoading(true);
             try {
-                const url = searchQuery ? `${BASE_URL}artists/search?q=${searchQuery}` : `${BASE_URL}artists?page=${currentPage}&limit=12`;
+                const url = searchQuery ? `${BASE_URL}artists/search?q=${searchQuery}` : `${BASE_URL}artists?page=${currentPage}&limit=40`;
 
                 const response = await axios.get(url);
                 setData(response.data.data);

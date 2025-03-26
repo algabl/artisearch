@@ -65,14 +65,14 @@ export default function Page() {
         );
     }
     return (
-        <div className="min-h-screen flex items-start">
-            <div className="container mx-auto px-4 py-3 flex flex-col md:flex-row gap-8">
+        <div className="h-full flex items-start">
+            <div className="h-full mx-auto px-4 py-3 flex flex-col md:flex-row  overflow-y-auto md:overflow-y-hidden">
                 <div className="w-full md:w-1/2">
                     <img
                         className="w-full h-auto object-contain rounded-lg shadow-lg"
                         src={`${config.iiif_url}/${artwork.image_id}/full/843,/0/default.jpg`}
-                        width={843}
-                        height={843}
+                        // width={843}
+                        // height={843}
                         alt={artwork.thumbnail.alt_text}
                     />
                     <div className="flex justify-end space-x-4">

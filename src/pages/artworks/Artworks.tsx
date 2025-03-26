@@ -18,6 +18,7 @@ import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useLocation } from "react-router-dom";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Artworks() {
     const location = useLocation();
@@ -30,7 +31,6 @@ export default function Artworks() {
     });
     const [totalPages, setTotalPages] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
-    // const [error, setError] = useState(null);
     const { popCrumb, setCrumbs, readTopCrumb } = useBreadcrumbs();
 
     useEffect(() => {
@@ -92,94 +92,94 @@ export default function Artworks() {
         localStorage.setItem("currentPage", currentPage.toString());
     }, [currentPage]);
 
-    // useEffect(() => {
-    //     window.scrollTo(0, 0);
-    // }, [currentPage]);
-
     const handleSearch = (query: string) => {
         setSearchQuery(query);
         setCurrentPage(1);
     };
 
     return (
-        <div className="container mx-auto px-4 py-3">
-            <SearchBar onSearch={handleSearch} placeholder="Search for artwork..." className="mb-4 mx-auto" />
+        <div className="flex flex-col mx-auto w-full h-full">
+            <SearchBar onSearch={handleSearch} placeholder="Search for artwork..." className="mb-4 mx-auto shrink-0" />
             {loading ? (
-                <div className="flex items-center justify-center h-screen">
+                <div className="flex items-center justify-center flex-grow">
                     <Spinner />
                 </div>
             ) : (
-                <>
-                    <div className="flex flex-wrap justify-center gap-4">
-                        {data.map((artwork) => {
-                            if (imageData[artwork.id] === null) {
-                                return null;
-                            } else {
-                                return <SearchResult key={artwork.id} data={{ ...artwork, image_id: imageData[artwork.id] }} />;
-                            }
-                        })}
-                    </div>
-                    <Pagination className="my-10">
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                                    // disabled={currentPage === 1}
-                                />
-                            </PaginationItem>
-
-                            {currentPage == 2 && (
-                                <PaginationItem>
-                                    <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
-                                </PaginationItem>
-                            )}
-
-                            {currentPage > 2 && (
-                                <Popover>
-                                    <PopoverTrigger>
-                                        <PaginationEllipsis />
-                                    </PopoverTrigger>
-                                    <PopoverContent>
-                                        <Input
-                                            type="number"
-                                            min="1"
-                                            max={totalPages}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter") {
-                                                    const page = parseInt((e.target as HTMLInputElement).value, 10);
-                                                    if (page >= 1 && page <= totalPages) {
-                                                        setCurrentPage(page);
-                                                    }
-                                                }
+                <div className="flex flex-col flex-grow overflow-auto">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-wrap justify-center gap-4">
+                            {data.map((artwork) => {
+                                if (imageData[artwork.id] === null) {
+                                    return null;
+                                } else {
+                                    return (
+                                        <SearchResult
+                                            key={artwork.id}
+                                            data={{
+                                                ...artwork,
+                                                image_id: imageData[artwork.id],
                                             }}
-                                            placeholder="Enter page number"
-                                            className="w-48 text-start"
                                         />
-                                    </PopoverContent>
-                                </Popover>
-                            )}
-
-                            <PaginationItem>
-                                <PaginationLink isActive>{currentPage}</PaginationLink>
-                            </PaginationItem>
-
-                            {currentPage < totalPages - 1 && <PaginationEllipsis />}
-
-                            {currentPage < totalPages && (
+                                    );
+                                }
+                            })}
+                        </div>
+                        <Pagination className="py-4">
+                            <PaginationContent>
                                 <PaginationItem>
-                                    <PaginationLink onClick={() => setCurrentPage(totalPages)}>{totalPages}</PaginationLink>
+                                    <PaginationPrevious
+                                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                        // disabled={currentPage === 1}
+                                    />
                                 </PaginationItem>
-                            )}
-
-                            <PaginationItem>
-                                <PaginationNext
-                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                    // disabled={currentPage === totalPages}
-                                />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </>
+                                {currentPage == 2 && (
+                                    <PaginationItem>
+                                        <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
+                                    </PaginationItem>
+                                )}
+                                {currentPage > 2 && (
+                                    <Popover>
+                                        <PopoverTrigger>
+                                            <PaginationEllipsis />
+                                        </PopoverTrigger>
+                                        <PopoverContent>
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                max={totalPages}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        const page = parseInt((e.target as HTMLInputElement).value, 10);
+                                                        if (page >= 1 && page <= totalPages) {
+                                                            setCurrentPage(page);
+                                                        }
+                                                    }
+                                                }}
+                                                placeholder="Enter page number"
+                                                className="w-48 text-start"
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                                <PaginationItem>
+                                    <PaginationLink isActive>{currentPage}</PaginationLink>
+                                </PaginationItem>
+                                {currentPage < totalPages - 1 && <PaginationEllipsis />}
+                                {currentPage < totalPages && (
+                                    <PaginationItem>
+                                        <PaginationLink onClick={() => setCurrentPage(totalPages)}>{totalPages}</PaginationLink>
+                                    </PaginationItem>
+                                )}
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                        // disabled={currentPage === totalPages}
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    </div>
+                </div>
             )}
         </div>
     );

@@ -100,13 +100,3 @@
         animation: 0.15s cubic-bezier(0, 0, 0.2, 1) both fade-in;
     }
 }
-
-a {
-    color: var(--sidebar-primary-foreground);
-    text-decoration: none; /* Remove underline */
-    transition: color 0.2s ease-in-out; /* Smooth transition */
-}
-
-a:hover {
-    color: var(--color-primary-foreground); /* Darker shade on hover */
-}

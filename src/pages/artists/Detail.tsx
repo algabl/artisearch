@@ -9,7 +9,7 @@ import { Artist } from "@/types/artist";
 import SearchResult from "@/components/SearchResult";
 
 interface ArtistDetailProps {
-    artist: Artist;
+    artist?: Artist;
 }
 
 export default function Detail(props: ArtistDetailProps) {
@@ -37,10 +37,10 @@ export default function Detail(props: ArtistDetailProps) {
                     },
                 };
 
-                axios.post(`${BASE_URL}artworks/search`, query).then((response) => {
+                axios.post(`${BASE_URL}artworks/search`, query).then(async (response) => {
                     console.log(response.data.data);
                     setArtworks(response.data.data);
-                    fetchImageIds(response.data.data);
+                    await fetchImageIds(response.data.data);
                 });
             } catch (error) {
                 console.error("Error fetching artist:", error);
@@ -65,10 +65,9 @@ export default function Detail(props: ArtistDetailProps) {
         };
     }, [id, artist]);
 
-
     const fetchImageIds = useCallback(async (artworks: Artwork[]) => {
         if (artworks.length === 0) return;
-
+        setLoading(true);
         try {
             const ids = artworks.map((artwork) => artwork.id);
             const response = await axios.get(`${BASE_URL}artworks/?ids=${ids.join(",")}&fields=id,title,image_id`);
@@ -76,28 +75,48 @@ export default function Detail(props: ArtistDetailProps) {
                 acc[item.id] = item.image_id;
                 return acc;
             }, {});
+            console.log(response.data);
             setImageData(images);
         } catch (error) {
             console.error("Error fetching image IDs:", error);
+        } finally {
+            setLoading(false);
         }
     }, []);
 
-    if (!artist) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Spinner />
-            </div>
-        );
-    }
     return (
-        <div className="flex flex-wrap justify-center gap-4">
-            {artworks.map((artwork) => {
-                if (imageData[artwork.id] === null) {
-                    return null;
-                } else {
-                    return <SearchResult key={artwork.id} data={{ ...artwork, image_id: imageData[artwork.id] }} />;
-                }
-            })}
+        <div className="px-4 py-4 mb-4 w-full h-full overflow-auto">
+            {!artist || loading ? (
+                <div className="flex items-center justify-center h-64">
+                    <Spinner />
+                </div>
+            ) : (
+                <>
+                    <h1 className="text-2xl font-bold mb-4">{artist.title}</h1>
+                    <p className="text-gray-500 mb-2">
+                        {artist.birth_date && `Born: ${artist.birth_date}`} {artist.death_date && ` - Died: ${artist.death_date}`}
+                    </p>
+                    <p className="text-gray-700 mb-4">{artist.description}</p>
+
+                    <h2 className="text-xl font-semibold mb-4">Artworks</h2>
+                    {Object.values(imageData).every((imageId) => imageId === null) ? (
+                        <div className="flex items-center justify-center h-64">
+                            <p className="text-gray-500">No results found.</p>
+                        </div>
+                    ) : (
+                        <div className="flex flex-wrap justify-center gap-4 mb-4">
+                            {artworks.map((artwork) => {
+                                if (imageData[artwork.id] === null) {
+                                    return null;
+                                } else {
+                                    console.log("Image ID:", imageData[artwork.id]);
+                                    return <SearchResult key={artwork.id} data={{ ...artwork, image_id: imageData[artwork.id] }} />;
+                                }
+                            })}
+                        </div>
+                    )}
+                </>
+            )}
         </div>
     );
 }

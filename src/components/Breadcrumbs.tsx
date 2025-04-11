@@ -20,7 +20,11 @@ export default function Breadcrumbs() {
                                 <BreadcrumbPage className="truncate max-w-[200px]">{crumb.label}</BreadcrumbPage>
                             ) : (
                                 <BreadcrumbLink asChild>
-                                    <Link to={crumb.path} className="truncate max-w-[150px] hover:max-w-full transition-all duration-300">
+                                    <Link
+                                        viewTransition
+                                        to={crumb.path}
+                                        className="truncate max-w-[150px] hover:max-w-full transition-all duration-300"
+                                    >
                                         {crumb.label}
                                     </Link>
                                 </BreadcrumbLink>

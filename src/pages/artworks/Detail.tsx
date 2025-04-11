@@ -65,16 +65,18 @@ export default function Page() {
         );
     }
     return (
-        <div className="h-full flex items-start">
-            <div className="h-full mx-auto px-4 py-3 flex flex-col md:flex-row  overflow-y-auto md:overflow-y-hidden">
-                <div className="w-full md:w-1/2">
-                    <img
-                        className="w-full h-auto object-contain rounded-lg shadow-lg"
-                        src={`${config.iiif_url}/${artwork.image_id}/full/843,/0/default.jpg`}
-                        // width={843}
-                        // height={843}
-                        alt={artwork.thumbnail.alt_text}
-                    />
+        <div className="h-full flex items-start overflow-auto md:overflow-hidden pb-5">
+            <div className="w-full h-full flex-1 mx-auto px-4 py-4 flex flex-col gap-6 md:flex-row md:overflow-hidden">
+                <div className="w-full h-full md:w-1/2 flex flex-col md:overflow-hidden">
+                    <div className="overflow-hidden rounded-lg">
+                        <img
+                            className="w-full h-auto md:max-h-[75vh] object-cover shadow-lg"
+                            src={`${config.iiif_url}/${artwork.image_id}/full/843,/0/default.jpg`}
+                            // width={843}
+                            // height={843}
+                            alt={artwork.thumbnail.alt_text}
+                        />
+                    </div>
                     <div className="flex justify-end space-x-4">
                         <TooltipProvider>
                             <Tooltip>
@@ -108,18 +110,77 @@ export default function Page() {
                         </TooltipProvider>
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 space-y-4">
+                <div className="w-full md:w-1/2 space-y-4 md:overflow-y-auto text-start">
                     <h1 className="text-3xl font-bold">{artwork.title}</h1>
                     {/* Add more artwork details here */}
 
                     <Button variant="secondary">
-                        <Link to={`/artists/${artwork.artist_id}`}>{artwork.artist_title} </Link>
+                        <Link to={`/artists/${artwork.artist_id}`} viewTransition>
+                            {artwork.artist_title}{" "}
+                        </Link>
                     </Button>
-                    <p className="text-lg">{artwork.date_display}</p>
-                    <p className="text-lg">{artwork.medium_display}</p>
-                    <p className="text-lg">{artwork.dimensions}</p>
-                    <p className="text-lg">{artwork.credit_line}</p>
+                    <DetailItem label="Date" value={`${artwork.date_start} - ${artwork.date_end}`} />
+                    <DetailItem label="Place of Origin" value={artwork.place_of_origin} />
+                    <DetailItem label="Medium" value={artwork.medium_display} />
+                    <DetailItem label="Dimensions" value={artwork.dimensions} />
+
+                    <DetailSection title="Description" value={artwork.description} />
+
+                    <DetailList title="Terms" items={artwork.term_titles} />
+                    <DetailList title="Classification Titles" items={artwork.classification_titles} />
                 </div>
+            </div>
+        </div>
+    );
+}
+
+interface DetailItemProps {
+    label: string;
+    value?: string | number;
+}
+
+function DetailItem({ label, value }: DetailItemProps) {
+    if (!value) return null;
+    return (
+        <p className="text-lg">
+            <span className="font-semibold">{label}:</span> {value}
+        </p>
+    );
+}
+
+interface DetailSectionProps {
+    title: string;
+    value?: string;
+}
+
+function DetailSection({ title, value }: DetailSectionProps) {
+    if (!value) return null;
+    return (
+        <div className="space-y-2">
+            <h2 className="text-xl font-semibold">{title}</h2>
+            <p className="text-lg" dangerouslySetInnerHTML={{ __html: value }}></p>
+        </div>
+    );
+}
+
+interface DetailListProps {
+    title: string;
+    items?: string[] | number[];
+}
+
+function DetailList({ title, items }: DetailListProps) {
+    if (!items || items.length === 0) return null;
+    return (
+        <div className="space-y-2">
+            <h2 className="text-xl font-semibold">{title}</h2>
+            <div className="flex flex-wrap gap-2">
+                {items.map((item, index) => (
+                    <Button key={index} variant={"outline"}>
+                        <Link to={`/artworks?q=${encodeURIComponent(item)}`} viewTransition>
+                            {item}
+                        </Link>
+                    </Button>
+                ))}
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import SearchBar from "@/components/SearchBar";
-import SearchResult from "@/components/SearchResult";
+// import SearchResult from "@/components/SearchResult";
 import {
     Pagination,
     PaginationContent,
@@ -71,24 +71,27 @@ export default function Artists() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-3">
-            <SearchBar onSearch={handleSearch} placeholder="Search for artist..." className="mb-4 mx-auto" />
+        <div className="px-4 py-4 w-full h-full overflo">
+            <div className="flex justify-center mb-4">
+                <SearchBar onSearch={handleSearch} placeholder="Search for artwork..." className="w-full max-w-md" />
+            </div>{" "}
             {loading ? (
-                <div className="flex items-center justify-center h-screen">
+                <div className="flex items-center justify-center h-64">
                     <Spinner />
                 </div>
             ) : (
                 <>
-                    <div className="flex flex-wrap justify-center gap-4">
+
+                    <div className="flex flex-wrap justify-center gap-4 mb-4">
                         {data.map((artist) => {
                             return (
-                                <Link to={`/artists/${artist.id}`} key={artist.id}>
+                                <Link to={`/artists/${artist.id}`} key={artist.id} viewTransition>
                                     {artist.title}
                                 </Link>
                             );
                         })}
                     </div>
-                    <Pagination className="my-10">
+                    <Pagination className="py-4">
                         <PaginationContent>
                             <PaginationItem>
                                 <PaginationPrevious

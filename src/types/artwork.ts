@@ -5,22 +5,6 @@ interface Thumbnail {
     alt_text: string;
 }
 
-interface DimensionDetail {
-    depth: number | null;
-    width: number | null;
-    height: number | null;
-    diameter: number | null;
-    clarification: string | null;
-}
-
-interface Color {
-    h: number;
-    l: number;
-    s: number;
-    percentage: number;
-    population: number;
-}
-
 export interface Artwork {
     id: number;
     api_model: string;

@@ -1,11 +1,9 @@
 import "@/index.css";
-import { Button } from "@/components/ui/button";
 import { GlobalErrorBoundary } from "@/providers/ErrorBoundary";
 import { ToastProvider } from "@/providers/ToastProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import Breadcrumbs from "./Breadcrumbs";
 import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
-import { Link } from "react-router-dom";
 import Header from "./Header";
 
 // TypeScript interface for props

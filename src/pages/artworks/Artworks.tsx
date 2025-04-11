@@ -58,7 +58,7 @@ export default function Artworks() {
             const ids = artworks.map((artwork) => artwork.id);
             const response = await fetchData(`artworks/?ids=${ids.join(",")}&fields=id,title,image_id`);
             console.log(response.data);
-            const images = response.data.reduce((acc: Record<number, string>, item: Art) => {
+            const images = response.data.reduce((acc: Record<number, string>, item: Artwork) => {
                 acc[item.id] = item.image_id;
                 return acc;
             }, {});
@@ -98,7 +98,6 @@ export default function Artworks() {
         localStorage.setItem("currentPage", currentPage.toString());
     }, [currentPage]);
 
-
     const handleSearch = (query: string) => {
         const params = new URLSearchParams();
         if (query) {
@@ -106,7 +105,6 @@ export default function Artworks() {
         }
         navigate(`/artworks?${params.toString()}`, { replace: true });
     };
-
 
     return (
         <div className="px-4 py-4 w-ful h-full overflow-auto">

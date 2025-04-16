@@ -72,7 +72,7 @@ export default function Artists() {
                 </div>
             ) : (
                 <>
-                    <div className="flex flex-wrap justify-center gap-4 mb-4 max-w-lg justify-self-center">
+                    <div className="flex flex-wrap justify-center gap-4 mb-4 max-w-lg mx-auto">
                         {data.map((artist) => {
                             return (
                                 <NavLink to={`/artists/${artist.id}`} key={artist.id} viewTransition>

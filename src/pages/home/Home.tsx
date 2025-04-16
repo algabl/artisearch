@@ -14,9 +14,9 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="relative">
+        <div className="overflow-y-auto overflow-x-hidden h-full relative">
             <Carousel
-                className="w-full h-[400px] mb-8 max-w-lg justify-self-center"
+                className="w-full h-[400px] mb-8 mx-auto"
                 opts={{
                     loop: true,
                     dragFree: false,
@@ -33,14 +33,15 @@ export default function Home() {
                         (artwork) =>
                             artwork.image_id && (
                                 <CarouselItem key={artwork.id} className="flex items-center justify-center sm:basis-1/3 ">
-                                    <div className="h-100 w-72 rounded-lg">
+                                    <NavLink viewTransition to={`/artworks/${artwork.id}`} className="h-100 w-72 rounded-lg">
                                         <img
                                             src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`}
                                             alt={artwork.title}
                                             height={400}
                                             className="rounded-lg shadow-lg object-cover h-full w-full"
+                                            style={{ viewTransitionName: `artwork-${artwork.id}` }}
                                         />
-                                    </div>
+                                    </NavLink>
                                 </CarouselItem>
                             )
                     )}

@@ -27,6 +27,24 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
         root.classList.add(theme);
     }, [theme]);
 
+    useEffect(() => {
+        if (theme === "system") {
+            const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+                const newSystemTheme = e.matches ? "dark" : "light";
+                const root = window.document.documentElement;
+                root.classList.remove("light", "dark");
+                root.classList.add(newSystemTheme);
+            };
+
+            const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+            mediaQuery.addEventListener("change", handleSystemThemeChange);
+
+            return () => {
+                mediaQuery.removeEventListener("change", handleSystemThemeChange);
+            };
+        }
+    }, [theme]);
+
     const value = {
         theme,
         setTheme: (theme: Theme) => {

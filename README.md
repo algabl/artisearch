@@ -1,54 +1,35 @@
-# React + TypeScript + Vite
+# Artisearch
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+Artisearch is a simple app to search for and find information about various artists and artworks. The features artworks are those in the Art Institude of Chicago.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## How to Run
 
-## Expanding the ESLint configuration
+1. Clone this repository
+2. Run `npm install`
+3. Run `npm run dev` to start local development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## APIs used
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+The main API this app uses is the [Art Institude of Chicago's Public API](https://www.artic.edu/open-access/public-api). This includes getting artworks, searching for them, and getting artists. All artworks, artists, and their accompanying information are supplied by them.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Extra Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Favorites
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Ability to favorite artworks. Press the heart on any artwork to add it to your favorites! These are saved to your local browser. You can view them by clicking the "Favorites" tab.
+
+### Animations
+
+Nice animations throughout. This espeically includes [CSS View Transitions](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_view_transitions) in many places for the artworks.
+
+### Theme Switching
+
+Supports dark and light mode, as well as matching your system theme.
+
+### Styling
+
+This app uses [TailwindCSS](https://tailwindcss.com) classes and [ShadCN](https://ui.shadcn.com) components for styling
+
+The app is deployed [here](https://artisearch.imalexblack.dev).

@@ -27,8 +27,8 @@ export default function SearchResult({ data }: SearchResultProps) {
     }, [data.image_id]);
 
     return (
-        <NavLink to={`/artworks/${data.id}`} viewTransition>
-            <Card className="relative w-100 h-80 max-w-dvw p-1 sm:p-0 rounded-lg shadow-md overflow-hidden group hover:cursor-pointer transition-transform duration-300 transform hover:scale-105">
+        <NavLink className="max-w-full" to={`/artworks/${data.id}`} viewTransition>
+            <Card className="relative w-100 h-80 max-w-full p-1 sm:p-0 rounded-lg shadow-md overflow-hidden group hover:cursor-pointer transition-transform duration-300 transform hover:scale-105">
                 {imageUrl || data.thumbnail?.lqip ? (
                     <img
                         src={imageUrl || data.thumbnail?.lqip}

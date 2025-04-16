@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
 import { NavLink } from "react-router-dom";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Menu } from "lucide-react";
 
 interface HeaderProps {
     className?: string;
@@ -18,7 +20,7 @@ export default function Header({ className }: HeaderProps) {
                         ArtiSearch
                     </NavLink>
                 </div>
-                <nav className="flex space-x-4">
+                <nav className="hidden md:flex space-x-4">
                     <Button variant="ghost" className={location.pathname === "/artworks" ? "bg-gray-200 dark:bg-gray-800" : ""}>
                         <NavLink to="/artworks" viewTransition style={{ viewTransitionName: "artworks-link" }}>
                             Artworks
@@ -36,6 +38,30 @@ export default function Header({ className }: HeaderProps) {
                     </Button>
                     <ModeToggle />
                 </nav>
+                <div className="md:hidden">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Menu>Menu</Menu>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                                <NavLink to="/artworks" className="w-full">
+                                    Artworks
+                                </NavLink>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <NavLink to="/artists" className="w-full">
+                                    Artists
+                                </NavLink>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <NavLink to="/artworks/favorites" className="w-full">
+                                    Favorites
+                                </NavLink>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
         </header>
     );

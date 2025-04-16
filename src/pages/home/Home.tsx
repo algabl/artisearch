@@ -3,6 +3,7 @@ import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { NavLink, useLoaderData } from "react-router-dom";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Artwork } from "@/types/artwork";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function Home() {
     const { removeBreadcrumbsAfter } = useBreadcrumbs();
@@ -15,12 +16,17 @@ export default function Home() {
     return (
         <div className="relative">
             <Carousel
-                className="w-full h-[400px] mb-8"
+                className="w-full h-[400px] mb-8 max-w-lg justify-self-center"
                 opts={{
                     loop: true,
-                    dragFree: true,
-                    
+                    dragFree: false,
                 }}
+                plugins={[
+                    Autoplay({
+                        delay: 3000,
+                        stopOnInteraction: false,
+                    }),
+                ]}
             >
                 <CarouselContent>
                     {artworks.map(

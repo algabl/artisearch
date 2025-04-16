@@ -32,7 +32,7 @@ export default function Home() {
                     {artworks.map(
                         (artwork) =>
                             artwork.image_id && (
-                                <CarouselItem key={artwork.id} className="flex items-center justify-center sm:basis-1/3 ">
+                                <CarouselItem key={artwork.id} className="flex items-center justify-center sm:basis-1/3 lg:basis-1/5">
                                     <NavLink viewTransition to={`/artworks/${artwork.id}`} className="h-100 w-72 rounded-lg">
                                         <img
                                             src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`}

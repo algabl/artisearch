@@ -1,44 +1,28 @@
 import { Artwork } from "@/types/artwork";
-import { useEffect, useState } from "react";
-import { BASE_URL } from "@/lib/api";
-import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useLoaderData } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Download, Heart } from "lucide-react";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/useFavorites";
+import { NavLink } from "react-router-dom";
 
 interface Config {
     iiif_url: string;
 }
 
 export default function Page() {
-    const { id } = useParams();
-    const [artwork, setArtwork] = useState<Artwork | null>(null);
-    const [config, setConfig] = useState<Config | null>(null);
-    const { pushCrumb, popCrumb } = useBreadcrumbs();
+    const { addBreadcrumb } = useBreadcrumbs();
     const { isFavorite, toggleFavorite } = useFavorites();
 
-    useEffect(() => {
-        // Fetch artwork by id
-        axios.get(`${BASE_URL}artworks/${id}`).then((response) => {
-            console.log(response.data);
-            setArtwork(response.data.data);
-
-            setConfig(response.data.config);
-        });
-    }, []);
+    const { artwork, config } = useLoaderData() as { artwork: Artwork; config: Config };
 
     useEffect(() => {
         if (!artwork) return;
-        pushCrumb({ label: artwork?.title ?? "Artwork", path: `/artwork/${id}` });
-        return () => {
-            popCrumb();
-        };
-    }, [artwork]);
+        addBreadcrumb({ label: artwork?.title ?? "Artwork", path: `/artworks/${artwork.id}` });
+    }, [artwork, addBreadcrumb]);
 
     const handleDownload = async (artwork: Artwork, config: Config) => {
         try {
@@ -70,11 +54,12 @@ export default function Page() {
                 <div className="w-full h-full md:w-1/2 flex flex-col md:overflow-hidden">
                     <div className="overflow-hidden rounded-lg">
                         <img
-                            className="w-full h-auto md:max-h-[75vh] object-cover shadow-lg"
+                            className="rounded-lg w-full h-auto md:max-h-[75vh] object-cover shadow-lg"
                             src={`${config.iiif_url}/${artwork.image_id}/full/843,/0/default.jpg`}
                             // width={843}
                             // height={843}
-                            alt={artwork.thumbnail.alt_text}
+                            alt={artwork.thumbnail?.alt_text}
+                            style={{ viewTransitionName: `artwork-${artwork.id}` }} // ADD THIS LINE
                         />
                     </div>
                     <div className="flex justify-end space-x-4">
@@ -115,9 +100,9 @@ export default function Page() {
                     {/* Add more artwork details here */}
 
                     <Button variant="secondary">
-                        <Link to={`/artists/${artwork.artist_id}`} viewTransition>
+                        <NavLink to={`/artists/${artwork.artist_id}`} viewTransition>
                             {artwork.artist_title}{" "}
-                        </Link>
+                        </NavLink>
                     </Button>
                     <DetailItem label="Date" value={`${artwork.date_start} - ${artwork.date_end}`} />
                     <DetailItem label="Place of Origin" value={artwork.place_of_origin} />
@@ -176,9 +161,9 @@ function DetailList({ title, items }: DetailListProps) {
             <div className="flex flex-wrap gap-2">
                 {items.map((item, index) => (
                     <Button key={index} variant={"outline"}>
-                        <Link to={`/artworks?q=${encodeURIComponent(item)}`} viewTransition>
+                        <NavLink to={`/artworks?q=${encodeURIComponent(item)}`} viewTransition>
                             {item}
-                        </Link>
+                        </NavLink>
                     </Button>
                 ))}
             </div>

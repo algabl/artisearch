@@ -15,7 +15,7 @@ import { Artist } from "@/types/artist";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function Artists() {
     const [data, setData] = useState<Artist[]>([]);
@@ -26,20 +26,11 @@ export default function Artists() {
     });
     const [totalPages, setTotalPages] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
-    const { popCrumb, setCrumbs } = useBreadcrumbs();
+    const { addBreadcrumb } = useBreadcrumbs();
 
     useEffect(() => {
-        setCrumbs([
-            { label: "Home", path: "/" },
-            { label: "Artists", path: `/artists` },
-        ]);
-        return () => {
-            const isNavigatingToArtist = location.pathname.startsWith("/artists/");
-            if (!isNavigatingToArtist) {
-                popCrumb();
-            }
-        };
-    }, []);
+        addBreadcrumb({ label: "Artists", path: `/artists` });
+    }, [addBreadcrumb]);
 
     useEffect(() => {
         const fetchArtists = async () => {
@@ -71,9 +62,9 @@ export default function Artists() {
     };
 
     return (
-        <div className="px-4 py-4 w-full h-full overflo">
-            <div className="flex justify-center mb-4">
-                <SearchBar onSearch={handleSearch} placeholder="Search for artwork..." className="w-full max-w-md" />
+        <div className="px-4 py-4 w-full h-full overflow-auto">
+            <div className="flex justify-center mb-4 max-w-full">
+                <SearchBar onSearch={handleSearch} placeholder="Search for artists..." className="w-full max-w-md" initialQuery={searchQuery} />
             </div>{" "}
             {loading ? (
                 <div className="flex items-center justify-center h-64">
@@ -81,13 +72,12 @@ export default function Artists() {
                 </div>
             ) : (
                 <>
-
-                    <div className="flex flex-wrap justify-center gap-4 mb-4">
+                    <div className="flex flex-wrap justify-center gap-4 mb-4 max-w-lg justify-self-center">
                         {data.map((artist) => {
                             return (
-                                <Link to={`/artists/${artist.id}`} key={artist.id} viewTransition>
+                                <NavLink to={`/artists/${artist.id}`} key={artist.id} viewTransition>
                                     {artist.title}
-                                </Link>
+                                </NavLink>
                             );
                         })}
                     </div>
@@ -121,10 +111,7 @@ export default function Artists() {
                             )}
 
                             <PaginationItem>
-                                <PaginationNext
-                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                    // disabled={currentPage === totalPages}
-                                />
+                                <PaginationNext onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>

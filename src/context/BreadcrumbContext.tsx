@@ -1,41 +1,57 @@
-import { useContext, useState, ReactNode } from "react";
 import { BreadcrumbContext } from "@/hooks/useBreadcrumbs";
-export interface Crumb {
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+export interface Breadcrumb {
     label: string;
     path: string;
 }
 
 export interface BreadcrumbContextType {
-    crumbs: Crumb[];
-    setCrumbs: (crumbs: Crumb[]) => void;
-    pushCrumb: (crumb: Crumb) => void;
+    breadcrumbs: Breadcrumb[];
+    addBreadcrumb: (breadcrumb: Breadcrumb) => void;
+    removeBreadcrumbsAfter: (path: string) => void;
     popCrumb: () => void;
-    readTopCrumb: () => Crumb;
 }
 
-export function BreadcrumbProvider({ children }: { children: ReactNode }) {
-    const [crumbs, setCrumbs] = useState<Crumb[]>([{ label: "Home", path: "/" }]);
+export function BreadcrumbProvider({ children }: { children: React.ReactNode }) {
+    const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([{ label: "Home", path: "/" }]);
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const pushCrumb = (crumb: Crumb) => {
-        setCrumbs((prev) => [...prev, crumb]);
-        console.log("pushing crumb", crumb);
-        console.log("crumbs", crumbs);
+    useEffect(() => {
+        if (breadcrumbs.length > 1 && location.pathname !== breadcrumbs[breadcrumbs.length - 1].path) {
+            popCrumb();
+        }
+    }, [location, breadcrumbs]);
+
+    const addBreadcrumb = (breadcrumb: Breadcrumb) => {
+        setBreadcrumbs((prev) => {
+            const exists = prev.find((b) => b.path === breadcrumb.path);
+            if (exists) return prev;
+            return [...prev, breadcrumb];
+        });
+    };
+
+    const removeBreadcrumbsAfter = (path: string) => {
+        setBreadcrumbs((prev) => {
+            const index = prev.findIndex((b) => b.path === path);
+            if (index === -1) return prev;
+            return prev.slice(0, index + 1);
+        });
+        navigate(path);
     };
 
     const popCrumb = () => {
-        setCrumbs((prev) => prev.slice(0, -1));
+        setBreadcrumbs((prev) => {
+            if (prev.length <= 1) return prev;
+            const newCrumbs = [...prev];
+            newCrumbs.pop();
+            return newCrumbs;
+        });
     };
 
-    const readTopCrumb = () => {
-        return crumbs[crumbs.length - 1];
-    };
-    return <BreadcrumbContext value={{ crumbs, setCrumbs, pushCrumb, popCrumb, readTopCrumb }}>{children}</BreadcrumbContext>;
-}
-
-export function useBreadcrumbs() {
-    const context = useContext(BreadcrumbContext);
-    if (context === undefined) {
-        throw new Error("useBreadcrumbs must be used within a BreadcrumbProvider");
-    }
-    return context;
+    return (
+        <BreadcrumbContext.Provider value={{ breadcrumbs, addBreadcrumb, removeBreadcrumbsAfter, popCrumb }}>{children}</BreadcrumbContext.Provider>
+    );
 }

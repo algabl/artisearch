@@ -40,6 +40,10 @@ export default function Home() {
                                             height={400}
                                             className="rounded-lg shadow-lg object-cover h-full w-full"
                                             style={{ viewTransitionName: `artwork-${artwork.id}` }}
+                                            onError={(e) => {
+                                                e.currentTarget.src = artwork.thumbnail?.lqip; // Replace with your fallback image path
+                                                e.currentTarget.alt = "Thumbnail Image";
+                                            }}
                                         />
                                     </NavLink>
                                 </CarouselItem>

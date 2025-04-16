@@ -18,7 +18,7 @@ export default function ArtistDetail() {
     useEffect(() => {
         if (!artist) return;
         addBreadcrumb({ label: artist?.title ?? "Artist", path: `/artists/${artist.id}` });
-    }, [artist, addBreadcrumb]);
+    }, [artist]);
 
     return (
         <div className="px-4 py-4 mb-4 w-full h-full overflow-auto">

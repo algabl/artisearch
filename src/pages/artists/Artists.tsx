@@ -30,7 +30,7 @@ export default function Artists() {
 
     useEffect(() => {
         addBreadcrumb({ label: "Artists", path: `/artists` });
-    }, [addBreadcrumb]);
+    }, []);
 
     useEffect(() => {
         const fetchArtists = async () => {

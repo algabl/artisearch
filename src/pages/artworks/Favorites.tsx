@@ -33,7 +33,7 @@ export default function Artworks() {
 
     useEffect(() => {
         addBreadcrumb({ label: "Favorites", path: "/artworks/favorites" });
-    });
+    }, []);
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);

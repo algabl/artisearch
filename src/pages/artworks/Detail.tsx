@@ -22,7 +22,7 @@ export default function Page() {
     useEffect(() => {
         if (!artwork) return;
         addBreadcrumb({ label: artwork?.title ?? "Artwork", path: `/artworks/${artwork.id}` });
-    }, [artwork, addBreadcrumb]);
+    }, [artwork]);
 
     const handleDownload = async (artwork: Artwork, config: Config) => {
         try {

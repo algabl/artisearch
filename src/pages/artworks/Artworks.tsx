@@ -25,7 +25,7 @@ export default function Artworks() {
 
     useEffect(() => {
         addBreadcrumb({ label: "Artworks", path: "/artworks" });
-    }, [addBreadcrumb]);
+    }, []);
 
     const handleSearch = (query: string) => {
         const params = new URLSearchParams();

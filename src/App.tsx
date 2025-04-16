@@ -17,6 +17,9 @@ const router = createHashRouter([
             {
                 index: true,
                 element: <Home />,
+                loader: async () => {
+                    return fetchOrSearchArtworks();
+                }
             },
             {
                 path: "artworks",

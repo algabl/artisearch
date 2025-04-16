@@ -12,7 +12,7 @@ Artisearch is a simple app to search for and find information about various arti
 
 ## APIs used
 
-The main API this app uses is the [Art Institude of Chicago's Public API](https://www.artic.edu/open-access/public-api). This includes getting artworks, searching for them, and getting artists. All artworks, artists, and their accompanying information are supplied by them.
+The main API this app uses is the [Art Institute of Chicago's Public API](https://www.artic.edu/open-access/public-api). This includes getting artworks, searching for them, and getting artists. All artworks, artists, and their accompanying information are supplied by them.
 
 ## Extra Features
 

@@ -6,6 +6,12 @@
     height: 100vh;
 }
 
+@supports (height: 100dvh) {
+    body {
+        min-height: 100dvh;
+    }
+}
+
 :root {
     --background: oklch(1 0 0);
 }

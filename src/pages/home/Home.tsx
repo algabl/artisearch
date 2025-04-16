@@ -6,7 +6,7 @@ export default function Home() {
     const { removeBreadcrumbsAfter } = useBreadcrumbs();
 
     useEffect(() => {
-        removeBreadcrumbsAfter("/"); // Remove breadcrumbs after the home page
+        removeBreadcrumbsAfter("/");
     }, []);
 
     return (

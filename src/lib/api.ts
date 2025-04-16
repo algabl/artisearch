@@ -4,6 +4,7 @@ import axios from "axios";
 
 export const BASE_URL = "https://api.artic.edu/api/v1/";
 
+// The basic fetch function to handle GET requests
 async function fetchData(endpoint: string, options?: RequestInit) {
     try {
         const response = await fetch(`${BASE_URL}${endpoint}`, options);
@@ -16,12 +17,14 @@ async function fetchData(endpoint: string, options?: RequestInit) {
     }
 }
 
+// Function to fetch artworks based on a search query or current page
 export async function searchArtworks(currentPage: number, query: string): Promise<{ artworks: Artwork[]; totalPages: number }> {
-    const url = query ? `artworks/search?q=${query}&page=${currentPage}&limit=12` : `artworks?page=${currentPage}&limit=12`;
+    const url = `artworks/search?q=${query}&page=${currentPage}&limit=12`;
     const response = await fetchData(url);
     return { artworks: response.data, totalPages: response.pagination.total_pages };
 }
 
+// Function to fetch artworks by artist ID
 export async function searchArtworksByArtist(id: string): Promise<Artwork[]> {
     const query = {
         query: {
@@ -34,6 +37,7 @@ export async function searchArtworksByArtist(id: string): Promise<Artwork[]> {
     return response.data.data as Promise<Artwork[]>;
 }
 
+// Function to fetch image IDs for a list of artworks
 export async function fetchImageIds(artworks: Artwork[]): Promise<Record<number, string>> {
     if (artworks.length === 0) return {};
 
@@ -46,11 +50,13 @@ export async function fetchImageIds(artworks: Artwork[]): Promise<Record<number,
     return images;
 }
 
+// Function to fetch a specific artist by ID
 export async function fetchArtist(id: string): Promise<Artist> {
     const response = await fetchData(`artists/${id}`);
     return response.data as Promise<Artist>;
 }
 
+// Function to fetch an artist and their artworks
 export async function fetchArtistAndArtworks(id: string | undefined) {
     if (!id) {
         throw new Error("Artist ID is required");
@@ -62,6 +68,7 @@ export async function fetchArtistAndArtworks(id: string | undefined) {
     return { artist, artworks, imageData };
 }
 
+// Function to fetch a specific artwork by ID
 export async function fetchArtwork(id?: string): Promise<{ artwork: Artwork; config: { iiif_url: string } }> {
     if (!id) {
         throw new Error("Artwork ID is required");
@@ -70,18 +77,22 @@ export async function fetchArtwork(id?: string): Promise<{ artwork: Artwork; con
     return { artwork: response.data, config: response.config };
 }
 
-export async function fetchArtworks(currentPage: number = 1, ids: number[] = []): Promise<{ artworks: Artwork[]; totalPages: number }> {
-    const url = ids.length > 0 ? `artworks/?ids=${ids.join(",")}&page=${currentPage}&limit=12` : `artworks?page=${currentPage}&limit=12`;
+// Function to fetch artworks with pagination
+// This function fetches artworks based on the current page
+export async function fetchArtworks(currentPage: number = 1): Promise<{ artworks: Artwork[]; totalPages: number }> {
+    const url = `artworks?page=${currentPage}&limit=12`;
     const response = await fetchData(url);
     return { artworks: response.data, totalPages: response.pagination.total_pages };
 }
 
+// Function to fetch artworks by their IDs
 export async function fetchArtworksByIds(ids: number[]): Promise<{ artworks: Artwork[] }> {
     const url = `artworks/?ids=${ids.join(",")}`;
     const response = await fetchData(url);
     return { artworks: response.data };
 }
 
+// Function to fetch artworks based on a search query or current page
 export async function fetchOrSearchArtworks(query?: string, currentPage: number = 1): Promise<{ artworks: Artwork[]; totalPages: number }> {
     if (query) {
         const searchResult = await searchArtworks(currentPage, query);

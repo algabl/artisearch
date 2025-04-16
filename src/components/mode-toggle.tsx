@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/hooks/useTheme";
 
+// Component to toggle between light and dark themes
 export function ModeToggle() {
     const { setTheme } = useTheme();
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -4,13 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
 interface SearchBarProps {
+    // Function to handle search
     onSearch: (query: string) => void;
+    // Placeholder text for the input field
     placeholder?: string;
+    // Additional CSS classes for styling
     className?: string;
+    // Initial search query
     initialQuery?: string;
+    // Flag to indicate if search should be triggered on input change
     onChangeSearch?: boolean;
 }
 
+// Reusable search bar component
 const SearchBar = ({ onSearch, placeholder = "Search...", className = "", initialQuery = "", onChangeSearch = false }: SearchBarProps) => {
     const [query, setQuery] = useState(initialQuery);
 

@@ -9,6 +9,7 @@ interface HeaderProps {
     className?: string;
 }
 
+// This is the header component for the application.
 export default function Header({ className }: HeaderProps) {
     const location = useLocation();
 

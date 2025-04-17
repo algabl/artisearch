@@ -20,6 +20,11 @@ export default function Artworks() {
         const artworks = async () => {
             setIsLoading(true);
             try {
+                if (!favorites || favorites.length === 0) {
+                    setData([]);
+                    setIsLoading(false);
+                    return;
+                }
                 const fetchResult = await fetchArtworksByIds(favorites);
                 setData(fetchResult.artworks);
             } catch (error) {
@@ -59,7 +64,7 @@ export default function Artworks() {
                 <div className="flex flex-wrap justify-center gap-4 mb-4">
                     {data.length === 0 ? (
                         <div className="flex items-center justify-center h-64">
-                            <p className="text-gray-500">No results found.</p>
+                            <p className="text-gray-500">No favorites found.</p>
                         </div>
                     ) : (
                         data

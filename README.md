@@ -2,7 +2,7 @@
 
 ## Description
 
-Artisearch is a simple app to search for and find information about various artists and artworks. The features artworks are those in the Art Institude of Chicago.
+Artisearch is a simple app to search for and find information about various artists and artworks. The features artworks are those in the Art Institute of Chicago.
 
 ## How to Run
 

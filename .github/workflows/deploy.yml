@@ -21,6 +21,9 @@ jobs:
               run: npm install
 
             - name: Build
+              env:
+                  VITE_PUBLIC_POSTHOG_KEY: phc_AsxcvxpEPlBdMijUhYz1MMCICqXL3bBe4abAdLZlYiz
+                  VITE_PUBLIC_POSTHOG_HOST: https://us.i.posthog.com
               run: npm run build
 
             - name: Create CNAME file

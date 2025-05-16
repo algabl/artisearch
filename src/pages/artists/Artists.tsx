@@ -65,7 +65,7 @@ export default function Artists() {
         <div className="px-4 py-4 w-full h-full overflow-auto">
             <div className="flex justify-center mb-4 max-w-full">
                 <SearchBar onSearch={handleSearch} placeholder="Search for artists..." className="w-full max-w-md" initialQuery={searchQuery} />
-            </div>{" "}
+            </div>
             {loading ? (
                 <div className="flex items-center justify-center h-64">
                     <Spinner />

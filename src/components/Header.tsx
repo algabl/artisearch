@@ -33,7 +33,7 @@ export default function Header({ className }: HeaderProps) {
                         </NavLink>
                     </Button>
                     <Button variant="ghost" className={location.pathname === "/artworks/favorites" ? "bg-gray-200 dark:bg-gray-800" : ""}>
-                        <NavLink to="/artworks/favorites" viewTransition style={{ viewTransitionName: "favorites-link" }}>
+                        <NavLink to="/artworks/favorites" viewTransition>
                             Favorites
                         </NavLink>
                     </Button>
@@ -46,17 +46,17 @@ export default function Header({ className }: HeaderProps) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem>
-                                <NavLink to="/artworks" className="w-full">
+                                <NavLink viewTransition to="/artworks" className="w-full">
                                     Artworks
                                 </NavLink>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <NavLink to="/artists" className="w-full">
+                                <NavLink viewTransition to="/artists" className="w-full">
                                     Artists
                                 </NavLink>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <NavLink to="/artworks/favorites" className="w-full">
+                                <NavLink viewTransition to="/artworks/favorites" className="w-full">
                                     Favorites
                                 </NavLink>
                             </DropdownMenuItem>

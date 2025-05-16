@@ -1,5 +1,5 @@
 import { Artwork } from "@/types/artwork";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Download, Heart } from "lucide-react";
@@ -8,6 +8,9 @@ import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/useFavorites";
 import { NavLink } from "react-router-dom";
+import { Media } from "@/types/media";
+import { fetchMedia, fetchVideos } from "@/lib/api";
+import AudioPlayer from "@/components/AudioPlayer";
 
 interface Config {
     iiif_url: string;
@@ -18,9 +21,24 @@ export default function Page() {
     const { isFavorite, toggleFavorite } = useFavorites();
 
     const { artwork, config } = useLoaderData() as { artwork: Artwork; config: Config };
+    const [videos, setVideos] = useState<Media[]>([]);
+    const [sounds, setSounds] = useState<Media[]>([]);
 
     useEffect(() => {
+        async function fetchVideos() {
+            if (artwork?.video_ids.length == 0) return;
+            const videos = await fetchMedia(artwork.video_ids, "videos");
+            setVideos(videos);
+        }
+
+        async function fetchSounds() {
+            if (artwork?.sound_ids.length == 0) return;
+            const sounds = await fetchMedia(artwork.sound_ids, "sounds");
+            setSounds(sounds);
+        }
         if (!artwork) return;
+        fetchSounds();
+        fetchVideos();
         addBreadcrumb({ label: artwork?.title ?? "Artwork", path: `/artworks/${artwork.id}` });
     }, [artwork]);
 
@@ -109,6 +127,20 @@ export default function Page() {
                     <DetailItem label="Medium" value={artwork.medium_display} />
                     <DetailItem label="Dimensions" value={artwork.dimensions} />
 
+                    {videos.length > 0 && <DetailSection title="Videos" />}
+                    {videos.map((video) => (
+                        <div key={video.id} className="flex items-center space-x-2">
+                            <a href={video.content} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                {video.title}
+                            </a>
+                            <span className="text-gray-500">({video.type})</span>
+                        </div>
+                    ))}
+                    {sounds.length > 0 && <DetailSection title="Sounds" />}
+
+                    {sounds.map((sound) => (
+                        <AudioPlayer key={sound.id} sound={sound} />
+                    ))}
                     <DetailSection title="Description" value={artwork.description} />
 
                     <DetailList title="Terms" items={artwork.term_titles} />
@@ -139,11 +171,10 @@ interface DetailSectionProps {
 }
 
 function DetailSection({ title, value }: DetailSectionProps) {
-    if (!value) return null;
     return (
         <div className="space-y-2">
-            <h2 className="text-xl font-semibold">{title}</h2>
-            <p className="text-lg" dangerouslySetInnerHTML={{ __html: value }}></p>
+            {title && <h2 className="text-xl font-semibold">{title}</h2>}
+            {value && <p className="text-lg" dangerouslySetInnerHTML={{ __html: value }}></p>}
         </div>
     );
 }

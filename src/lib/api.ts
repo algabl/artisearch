@@ -1,5 +1,6 @@
 import { Artist } from "@/types/artist";
 import { Artwork } from "@/types/artwork";
+import { Media } from "@/types/media";
 import axios from "axios";
 
 export const BASE_URL = "https://api.artic.edu/api/v1/";
@@ -107,4 +108,11 @@ export async function fetchOrSearchArtworks(query?: string, currentPage: number 
         const fetchResult = await fetchArtworks(currentPage);
         return { artworks: fetchResult.artworks, totalPages: fetchResult.totalPages };
     }
+}
+
+export async function fetchMedia(ids: string[], type: "sounds" | "videos"): Promise<Media[]> {
+    const url = `${type}/?ids=${ids.join(",")}`;
+    const response = await fetchData(url);
+    console.log("Media response:", response);
+    return response.data;
 }

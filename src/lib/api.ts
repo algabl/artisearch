@@ -110,7 +110,7 @@ export async function fetchOrSearchArtworks(query?: string, currentPage: number 
     }
 }
 
-export async function fetchMedia(ids: string[], type: "sounds" | "videos"): Promise<Media[]> {
+export async function fetchMedia(ids: string[], type: "sounds" | "texts"): Promise<Media[]> {
     const url = `${type}/?ids=${ids.join(",")}`;
     const response = await fetchData(url);
     console.log("Media response:", response);

@@ -2,7 +2,7 @@ import { Artwork } from "@/types/artwork";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
-import { Download, Heart } from "lucide-react";
+import { Download, DownloadIcon, Heart } from "lucide-react";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { Button } from "@/components/ui/button";
@@ -21,14 +21,14 @@ export default function Page() {
     const { isFavorite, toggleFavorite } = useFavorites();
 
     const { artwork, config } = useLoaderData() as { artwork: Artwork; config: Config };
-    const [videos, setVideos] = useState<Media[]>([]);
+    const [texts, setTexts] = useState<Media[]>([]);
     const [sounds, setSounds] = useState<Media[]>([]);
 
     useEffect(() => {
-        async function fetchVideos() {
-            if (artwork?.video_ids.length == 0) return;
-            const videos = await fetchMedia(artwork.video_ids, "videos");
-            setVideos(videos);
+        async function fetchTexts() {
+            if (artwork?.text_ids.length == 0) return;
+            const texts = await fetchMedia(artwork.video_ids, "texts");
+            setTexts(texts);
         }
 
         async function fetchSounds() {
@@ -38,7 +38,7 @@ export default function Page() {
         }
         if (!artwork) return;
         fetchSounds();
-        fetchVideos();
+        fetchTexts();
         addBreadcrumb({ label: artwork?.title ?? "Artwork", path: `/artworks/${artwork.id}` });
     }, [artwork]);
 
@@ -127,14 +127,14 @@ export default function Page() {
                     <DetailItem label="Medium" value={artwork.medium_display} />
                     <DetailItem label="Dimensions" value={artwork.dimensions} />
 
-                    {videos.length > 0 && <DetailSection title="Videos" />}
-                    {videos.map((video) => (
-                        <div key={video.id} className="flex items-center space-x-2">
-                            <a href={video.content} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                {video.title}
+                    {texts.length > 0 && <DetailSection title="Documents" />}
+                    {texts.map((text) => (
+                        <Button key={text.id} asChild variant="outline" className="flex items-center gap-2">
+                            <a href={text.content} target="_blank" rel="noopener noreferrer" download>
+                                <DownloadIcon />
+                                {text.title}
                             </a>
-                            <span className="text-gray-500">({video.type})</span>
-                        </div>
+                        </Button>
                     ))}
                     {sounds.length > 0 && <DetailSection title="Sounds" />}
 

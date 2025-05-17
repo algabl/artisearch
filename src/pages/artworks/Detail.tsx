@@ -61,15 +61,15 @@ export default function Page() {
 
     if (!artwork || !config) {
         return (
-            <div className="flex items-center justify-center h-screen">
+            <div className="flex items-center justify-center h-svh">
                 <Spinner />
             </div>
         );
     }
     return (
         <div className="h-full flex items-start overflow-auto md:overflow-hidden pb-5">
-            <div className="w-full h-full flex-1 mx-auto px-4 py-4 flex flex-col gap-6 md:flex-row md:overflow-hidden">
-                <div className="w-full h-full md:w-1/2 flex flex-col md:overflow-hidden">
+            <div className="w-full flex-1 mx-auto px-4 py-4 flex flex-col gap-6 md:flex-row md:overflow-hidden md:h-full">
+                <div className="w-full md:w-1/2 flex flex-col md:overflow-hidden">
                     <div className="overflow-hidden rounded-lg">
                         <img
                             className="rounded-lg w-full h-auto md:max-h-[75vh] object-cover shadow-lg"
@@ -113,7 +113,7 @@ export default function Page() {
                         </TooltipProvider>
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 space-y-4 md:overflow-y-auto text-start">
+                <div className="md:h-full w-full md:w-1/2 space-y-4 md:overflow-y-auto text-start">
                     <h1 className="text-3xl font-bold">{artwork.title}</h1>
                     {/* Add more artwork details here */}
 

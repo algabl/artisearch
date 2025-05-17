@@ -13,7 +13,7 @@ export default function RootLayout() {
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
             <BreadcrumbProvider>
                 <ToastProvider />
-                <div className="flex flex-col h-full">
+                <div className="flex flex-col h-svh mb-2">
                     <Header />
                     <div className="container mx-auto px-4">
                         <Breadcrumbs />

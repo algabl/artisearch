@@ -2,7 +2,6 @@ import { useLoaderData } from "react-router-dom";
 import SearchResult from "@/components/SearchResult";
 import { Artist } from "@/types/artist";
 import { Artwork } from "@/types/artwork";
-import { useEffect } from "react";
 
 interface ArtistDetailLoaderData {
     artist: Artist;

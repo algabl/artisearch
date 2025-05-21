@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Artwork } from "@/types/artwork";
 import SearchResult from "@/components/SearchResult";
 import {
@@ -20,7 +20,6 @@ export default function Artworks() {
     const { artworks, totalPages } = useLoaderData() as { artworks: Artwork[]; totalPages: number };
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
-
 
     const handleSearch = (query: string) => {
         const params = new URLSearchParams();

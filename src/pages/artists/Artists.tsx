@@ -1,4 +1,5 @@
 import SearchBar from "@/components/SearchBar";
+import { Input } from "@/components/ui/input";
 import {
     Pagination,
     PaginationContent,

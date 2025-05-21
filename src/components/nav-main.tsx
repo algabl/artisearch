@@ -1,6 +1,7 @@
 "use client";
 
-import type { Icon } from "lucide-react";
+import React from "react";
+import { Icon } from "lucide-react";
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 
@@ -31,7 +32,7 @@ export function NavMain({
                         <SidebarMenuItem key={item.title}>
                             <Link to={item.url} onClick={() => setOpenMobile(false)}>
                                 <SidebarMenuButton tooltip={item.title} isActive={item === activeItem}>
-                                    {item.icon && <item.icon />}
+                                    {item.icon && React.createElement(item.icon)}
                                     <span>{item.title}</span>
                                 </SidebarMenuButton>
                             </Link>

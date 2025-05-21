@@ -2,7 +2,6 @@ import { useLoaderData } from "react-router-dom";
 import SearchResult from "@/components/SearchResult";
 import { Artist } from "@/types/artist";
 import { Artwork } from "@/types/artwork";
-import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { useEffect } from "react";
 
 interface ArtistDetailLoaderData {
@@ -13,12 +12,6 @@ interface ArtistDetailLoaderData {
 
 export default function ArtistDetail() {
     const { artist, artworks, imageData } = useLoaderData() as ArtistDetailLoaderData;
-    const { addBreadcrumb } = useBreadcrumbs();
-
-    useEffect(() => {
-        if (!artist) return;
-        addBreadcrumb({ label: artist?.title ?? "Artist", path: `/artists/${artist.id}` });
-    }, [artist]);
 
     return (
         <div className="px-4 py-4 mb-4 w-full h-full overflow-auto">

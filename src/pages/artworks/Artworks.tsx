@@ -11,7 +11,6 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import SearchBar from "@/components/SearchBar";
-import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
@@ -20,12 +19,8 @@ export default function Artworks() {
     const location = useLocation();
     const { artworks, totalPages } = useLoaderData() as { artworks: Artwork[]; totalPages: number };
     const [currentPage, setCurrentPage] = useState(1);
-    const { addBreadcrumb } = useBreadcrumbs();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        addBreadcrumb({ label: "Artworks", path: "/artworks" });
-    }, []);
 
     const handleSearch = (query: string) => {
         const params = new URLSearchParams();

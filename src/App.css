@@ -17,24 +17,24 @@
 }
 
 ::-webkit-scrollbar {
-    width: 8px; /* Adjust width as needed */
+    width: 0px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: transparent; /* Make thumb transparent */
+    background-color: transparent;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: transparent; /* Make track transparent */
+    background-color: transparent;
 }
 
 ::-webkit-scrollbar-corner {
-    background-color: transparent; /* Make corner transparent */
+    background-color: transparent;
 }
 
 /* Firefox */
 .scrollable-element {
-    scrollbar-color: transparent transparent; /* Make thumb and track transparent */
+    scrollbar-color: transparent transparent;
 }
 
 .dark {

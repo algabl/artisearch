@@ -25,3 +25,12 @@ export interface Artist {
     updated_at: string;
     timestamp: string;
 }
+
+export interface ArtistSearchResult {
+    api_link: string;
+    api_model: string;
+    id: number;
+    timestamp: string;
+    title: string;
+    _score: number;
+}

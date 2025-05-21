@@ -4,12 +4,11 @@ import { useLoaderData } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Download, DownloadIcon, Heart } from "lucide-react";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/useFavorites";
 import { NavLink } from "react-router-dom";
 import { Media } from "@/types/media";
-import { fetchMedia, fetchVideos } from "@/lib/api";
+import { fetchMedia } from "@/lib/api";
 import AudioPlayer from "@/components/AudioPlayer";
 
 interface Config {
@@ -17,7 +16,6 @@ interface Config {
 }
 
 export default function Page() {
-    const { addBreadcrumb } = useBreadcrumbs();
     const { isFavorite, toggleFavorite } = useFavorites();
 
     const { artwork, config } = useLoaderData() as { artwork: Artwork; config: Config };
@@ -39,8 +37,11 @@ export default function Page() {
         if (!artwork) return;
         fetchSounds();
         fetchTexts();
-        addBreadcrumb({ label: artwork?.title ?? "Artwork", path: `/artworks/${artwork.id}` });
     }, [artwork]);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const handleDownload = async (artwork: Artwork, config: Config) => {
         try {
@@ -67,15 +68,15 @@ export default function Page() {
         );
     }
     return (
-        <div className="h-full flex items-start overflow-auto md:overflow-hidden pb-5">
-            <div className="w-full flex-1 mx-auto px-4 py-4 flex flex-col gap-6 md:flex-row md:overflow-hidden md:h-full">
-                <div className="w-full md:w-1/2 flex flex-col md:overflow-hidden">
+        <div className="h-full flex items-start overflow-auto @4xl:overflow-hidden pb-5">
+            <div className="w-full flex-1 mx-auto px-4 py-4 flex flex-col gap-6 @4xl:flex-row @4xl:overflow-hidden @4xl:h-full">
+                <div className="w-full @4xl:w-1/2 flex flex-col @4xl:overflow-hidden">
                     <div className="overflow-hidden rounded-lg">
                         <img
-                            className="rounded-lg w-full h-auto md:max-h-[75vh] object-cover shadow-lg"
+                            className="rounded-lg w-full h-auto @4xl:max-h-[75vh] object-cover shadow-lg"
                             src={`${config.iiif_url}/${artwork.image_id}/full/843,/0/default.jpg`}
-                            // width={843}
-                            // height={843}
+                            width={artwork.thumbnail?.width}
+                            height={artwork.thumbnail?.height}
                             alt={artwork.thumbnail?.alt_text}
                             style={{ viewTransitionName: `artwork-${artwork.id}` }} // ADD THIS LINE
                         />
@@ -103,7 +104,11 @@ export default function Page() {
                                         onClick={() => toggleFavorite(artwork.id)}
                                         className="flex items-center space-x-2 mt-4 hover:text-primary cursor-pointer"
                                     >
-                                        {isFavorite(artwork.id) ? <Heart className="h-4 w-4 fill-current" /> : <Heart className="h-4 w-4" />}{" "}
+                                        <Heart
+                                            className={`h-4 w-4 transition-all duration-300 ${
+                                                isFavorite(artwork.id) ? "fill-red-500 scale-110" : "fill-none scale-100"
+                                            }`}
+                                        />
                                     </button>
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">
@@ -113,12 +118,14 @@ export default function Page() {
                         </TooltipProvider>
                     </div>
                 </div>
-                <div className="md:h-full w-full md:w-1/2 space-y-4 md:overflow-y-auto text-start">
-                    <h1 className="text-3xl font-bold">{artwork.title}</h1>
+                <div className="@4xl:h-full w-full @4xl:w-1/2 space-y-4 @4xl:overflow-y-auto text-start">
+                    <h1 className="text-3xl font-bold" style={{ viewTransitionName: `artwork-title-${artwork.id}` }}>
+                        {artwork.title}
+                    </h1>
                     {/* Add more artwork details here */}
 
                     <Button variant="secondary">
-                        <NavLink to={`/artists/${artwork.artist_id}`} viewTransition>
+                        <NavLink to={`/artists/${artwork.artist_id}`} viewTransition style={{ viewTransitionName: `artist-${artwork.artist_id}` }}>
                             {artwork.artist_title}{" "}
                         </NavLink>
                     </Button>
@@ -129,10 +136,10 @@ export default function Page() {
 
                     {texts.length > 0 && <DetailSection title="Documents" />}
                     {texts.map((text) => (
-                        <Button key={text.id} asChild variant="outline" className="flex items-center gap-2">
+                        <Button key={text.id} asChild variant="outline" className="flex items-center gap-2 max-w-full justify-start flex-wrap h-auto">
                             <a href={text.content} target="_blank" rel="noopener noreferrer" download>
                                 <DownloadIcon />
-                                {text.title}
+                                <span className="line-clamp-1">{text.title}</span>
                             </a>
                         </Button>
                     ))}

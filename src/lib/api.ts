@@ -1,4 +1,4 @@
-import { Artist } from "@/types/artist";
+import { Artist, ArtistSearchResult } from "@/types/artist";
 import { Artwork } from "@/types/artwork";
 import { Media } from "@/types/media";
 import axios from "axios";
@@ -107,6 +107,46 @@ export async function fetchOrSearchArtworks(query?: string, currentPage: number 
     } else {
         const fetchResult = await fetchArtworks(currentPage);
         return { artworks: fetchResult.artworks, totalPages: fetchResult.totalPages };
+    }
+}
+
+export async function fetchArtists(currentPage: number = 1): Promise<{ artists: Artist[]; totalPages: number }> {
+    const url = `artists?page=${currentPage}&limit=40`;
+    const response = await fetchData(url);
+    return { artists: response.data, totalPages: response.pagination.total_pages };
+}
+
+export async function searchArtists(currentPage: number, query: string): Promise<{ artists: ArtistSearchResult[]; totalPages: number }> {
+    const url = `artists/search?q=${query}&page=${currentPage}&limit=40`;
+    const response = await fetchData(url);
+    return { artists: response.data, totalPages: response.pagination.total_pages };
+}
+
+export async function fetchArtistsByIds(ids: number[]): Promise<Artist[]> {
+    const url = `artists/?ids=${ids.join(",")}`;
+    const response = await fetchData(url);
+    return response.data;
+}
+
+export async function fetchOrSearchArtists(query?: string, currentPage: number = 1): Promise<{ artists: Artist[]; totalPages: number }> {
+    if (query) {
+        const searchResult = await searchArtists(currentPage, query);
+        console.log("Search result:", searchResult);
+        const weightedArtistMap = new Map<number, number>();
+        searchResult.artists.forEach((artist) => {
+            weightedArtistMap.set(artist.id, artist._score);
+        });
+        const artists = await fetchArtistsByIds(searchResult.artists.map((artist) => artist.id));
+        artists.sort((a, b) => {
+            const scoreA = weightedArtistMap.get(a.id) || 0;
+            const scoreB = weightedArtistMap.get(b.id) || 0;
+            return scoreB - scoreA; // Sort in descending order
+        });
+        console.log("Fetched artists:", artists);
+        return { artists: artists, totalPages: searchResult.totalPages };
+    } else {
+        const fetchResult = await fetchArtists(currentPage);
+        return { artists: fetchResult.artists, totalPages: fetchResult.totalPages };
     }
 }
 

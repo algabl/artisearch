@@ -1,17 +1,11 @@
-import { useEffect } from "react";
-import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { NavLink, useLoaderData } from "react-router-dom";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Artwork } from "@/types/artwork";
 import Autoplay from "embla-carousel-autoplay";
+import SearchResult from "@/components/SearchResult";
 
 export default function Home() {
-    const { removeBreadcrumbsAfter } = useBreadcrumbs();
     const { artworks } = useLoaderData() as { artworks: Artwork[] };
-
-    useEffect(() => {
-        removeBreadcrumbsAfter("/");
-    }, []);
 
     return (
         <div className="overflow-y-auto overflow-x-hidden h-full relative">
@@ -28,12 +22,12 @@ export default function Home() {
                     }),
                 ]}
             >
-                <CarouselContent>
+                <CarouselContent className="py-5">
                     {artworks.map(
                         (artwork) =>
                             artwork.image_id && (
                                 <CarouselItem key={artwork.id} className="flex items-center justify-center sm:basis-1/3 lg:basis-1/5">
-                                    <NavLink viewTransition to={`/artworks/${artwork.id}`} className="h-100 w-72 rounded-lg" prefetch="viewport">
+                                    {/* <NavLink viewTransition to={`/artworks/${artwork.id}`} className="h-100 w-72 rounded-lg" prefetch="viewport">
                                         <img
                                             src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`}
                                             alt={artwork.title}
@@ -45,7 +39,8 @@ export default function Home() {
                                                 e.currentTarget.alt = "Thumbnail Image";
                                             }}
                                         />
-                                    </NavLink>
+                                    </NavLink> */}
+                                    <SearchResult className="h-100 w-72 rounded-lg" data={artwork} />
                                 </CarouselItem>
                             )
                     )}
@@ -53,10 +48,10 @@ export default function Home() {
                 <CarouselPrevious />
                 <CarouselNext />
             </Carousel>
-            <div className="text-center">
+            <div className="text-center mb-10">
                 <h1 className="text-4xl font-bold mb-4">Welcome to ArtiSearch</h1>
                 <p className="text-lg mb-6">Explore a curated collection of artworks and artists, all sourced from the Art Institute of Chicago.</p>
-                <div className="flex justify-center space-x-4">
+                <div className="flex flex-wrap justify-center gap-2">
                     <NavLink to="/artworks" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                         Browse Artworks
                     </NavLink>

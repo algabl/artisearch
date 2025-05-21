@@ -6,12 +6,14 @@ import { NavLink } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { useFavorites } from "@/hooks/useFavorites";
 import { Heart } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SearchResultProps {
     data: Artwork;
+    className?: string;
 }
 
-export default function SearchResult({ data }: SearchResultProps) {
+export default function SearchResult({ data, className }: SearchResultProps) {
     const [imageUrl, setImageUrl] = useState<string | null>(data?.thumbnail?.lqip);
     const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -27,8 +29,8 @@ export default function SearchResult({ data }: SearchResultProps) {
     }, [data.image_id]);
 
     return (
-        <NavLink className="max-w-full" to={`/artworks/${data.id}`} viewTransition prefetch="viewport">
-            <Card className="relative w-100 h-80 max-w-full p-1 sm:p-0 rounded-lg shadow-md overflow-hidden group hover:cursor-pointer transition-transform duration-300 transform hover:scale-105">
+        <NavLink className={cn("max-w-full", className)} to={`/artworks/${data.id}`} viewTransition prefetch="viewport">
+            <Card className="relative w-100 h-100 max-w-full p-1 sm:p-0 rounded-lg shadow-md overflow-hidden group hover:cursor-pointer transition-transform duration-300 transform hover:scale-105">
                 {imageUrl || data.thumbnail?.lqip ? (
                     <img
                         src={imageUrl || data.thumbnail?.lqip}
@@ -44,10 +46,11 @@ export default function SearchResult({ data }: SearchResultProps) {
                 {/* Placeholder for loading state */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {/* Dark overlay */}
-                <CardContent className="relative flex flex-col justify-end h-full p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <h1 className="text-xl font-semibold">{data.title}</h1>
-                    <p className="text-sm">{data.artist_display}</p>
-                    <p className="text-xs mt-2">{data.short_description || "No description available."}</p>
+                <CardContent className="relative flex flex-col justify-end h-full p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 mb-5">
+                    <h1 className="text-xl font-semibold line-clamp-2" style={{ viewTransitionName: `artwork-title-${data.id}` }}>
+                        {data.title}
+                    </h1>
+                    <p className="text-sm line-clamp-2">{data.artist_display}</p>
                 </CardContent>
                 <CardFooter
                     className={`absolute bottom-0 left-0 right-0 p-4 transition-opacity duration-300 ${
@@ -64,7 +67,11 @@ export default function SearchResult({ data }: SearchResultProps) {
                                     }}
                                     className="flex items-center space-x-2 mt-4 hover:text-primary cursor-pointer"
                                 >
-                                    {isFavorite(data.id) ? <Heart className="h-4 w-4 fill-current" /> : <Heart className="h-4 w-4" />}{" "}
+                                    <Heart
+                                        className={`h-4 w-4 transition-all duration-300 ${
+                                            isFavorite(data.id) ? "fill-red-500 scale-110" : "fill-none scale-100"
+                                        }`}
+                                    />
                                 </button>
                             </TooltipTrigger>
                             <TooltipContent side="bottom">

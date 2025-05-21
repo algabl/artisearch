@@ -1,5 +1,5 @@
 import { BreadcrumbContext } from "@/hooks/useBreadcrumbs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export interface Breadcrumb {
@@ -33,14 +33,17 @@ export function BreadcrumbProvider({ children }: { children: React.ReactNode }) 
         });
     };
 
-    const removeBreadcrumbsAfter = (path: string) => {
-        setBreadcrumbs((prev) => {
-            const index = prev.findIndex((b) => b.path === path);
-            if (index === -1) return prev;
-            return prev.slice(0, index + 1);
-        });
-        navigate(path);
-    };
+    const removeBreadcrumbsAfter = useCallback(
+        (path: string) => {
+            setBreadcrumbs((prev) => {
+                const index = prev.findIndex((b) => b.path === path);
+                if (index === -1) return prev;
+                return prev.slice(0, index + 1);
+            });
+            navigate(path);
+        },
+        [navigate]
+    );
 
     const popCrumb = () => {
         setBreadcrumbs((prev) => {

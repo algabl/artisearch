@@ -4,7 +4,6 @@ import SearchResult from "@/components/SearchResult";
 import { fetchArtworksByIds } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import SearchBar from "@/components/SearchBar";
-import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { useLocation } from "react-router-dom";
 import { useFavorites } from "@/hooks/useFavorites";
 
@@ -13,7 +12,6 @@ export default function Artworks() {
     const [data, setData] = useState<Artwork[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const { addBreadcrumb } = useBreadcrumbs();
     const { favorites } = useFavorites();
 
     useEffect(() => {
@@ -35,10 +33,6 @@ export default function Artworks() {
         };
         artworks();
     }, [location, favorites]);
-
-    useEffect(() => {
-        addBreadcrumb({ label: "Favorites", path: "/artworks/favorites" });
-    }, []);
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);

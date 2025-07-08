@@ -2,7 +2,7 @@ import "@/index.css";
 import { GlobalErrorBoundary } from "@/providers/ErrorBoundary";
 import { ToastProvider } from "@/providers/ToastProvider";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import { SidebarInset, SidebarProvider } from "./ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { SiteHeader } from "./site-header";
@@ -35,9 +35,9 @@ export default function RootLayout() {
                     <SidebarInset>
                         <SiteHeader />
                         <div ref={scrollSection} className="flex flex-1 flex-col overflow-y-auto p-0 m-0">
-                            <div className="@container/main flex flex-1 flex-col gap-2">
-                                <div className="flex flex-col">
-                                    <div className="px-0 lg:px-6">
+                            <div className="@container/main h-full flex flex-1 flex-col gap-2">
+                                <div className="flex flex-col @4xl:h-full">
+                                    <div className="px-0 lg:px-6 @4xl:h-full">
                                         <Outlet />
                                     </div>
                                 </div>

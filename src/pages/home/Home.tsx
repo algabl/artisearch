@@ -27,19 +27,6 @@ export default function Home() {
                         (artwork) =>
                             artwork.image_id && (
                                 <CarouselItem key={artwork.id} className="flex items-center justify-center sm:basis-1/3 lg:basis-1/5">
-                                    {/* <NavLink viewTransition to={`/artworks/${artwork.id}`} className="h-100 w-72 rounded-lg" prefetch="viewport">
-                                        <img
-                                            src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`}
-                                            alt={artwork.title}
-                                            height={400}
-                                            className="rounded-lg shadow-lg object-cover h-full w-full"
-                                            style={{ viewTransitionName: `artwork-${artwork.id}` }}
-                                            onError={(e) => {
-                                                e.currentTarget.src = artwork.thumbnail?.lqip; // Replace with your fallback image path
-                                                e.currentTarget.alt = "Thumbnail Image";
-                                            }}
-                                        />
-                                    </NavLink> */}
                                     <SearchResult className="h-100 w-72 rounded-lg" data={artwork} />
                                 </CarouselItem>
                             )

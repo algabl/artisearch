@@ -47,7 +47,7 @@ export default function SearchResult({ data, className }: SearchResultProps) {
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {/* Dark overlay */}
                 <CardContent className="relative flex flex-col justify-end h-full p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 mb-5">
-                    <h1 className="text-xl font-semibold line-clamp-2" style={{ viewTransitionName: `artwork-title-${data.id}` }}>
+                    <h1 className="text-xl font-semibold line-clamp-2">
                         {data.title}
                     </h1>
                     <p className="text-sm line-clamp-2">{data.artist_display}</p>

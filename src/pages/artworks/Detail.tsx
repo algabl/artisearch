@@ -10,6 +10,7 @@ import { NavLink } from "react-router-dom";
 import { Media } from "@/types/media";
 import { fetchMedia } from "@/lib/api";
 import AudioPlayer from "@/components/AudioPlayer";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 interface Config {
     iiif_url: string;
@@ -39,9 +40,9 @@ export default function Page() {
         fetchTexts();
     }, [artwork]);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+    // useEffect(() => {
+    //     window.scrollTo(0, 0);
+    // }, []);
 
     const handleDownload = async (artwork: Artwork, config: Config) => {
         try {
@@ -68,9 +69,9 @@ export default function Page() {
         );
     }
     return (
-        <div className="h-full flex items-start overflow-auto @4xl:overflow-hidden pb-5">
-            <div className="w-full flex-1 mx-auto px-4 py-4 flex flex-col gap-6 @4xl:flex-row @4xl:overflow-hidden @4xl:h-full">
-                <div className="w-full @4xl:w-1/2 flex flex-col @4xl:overflow-hidden">
+        <div className="h-full flex items-start overflow-auto pb-5 @4xl:pb-0 @4xl:overflow-hidden">
+            <div className="w-full flex-1 mx-auto px-4 flex flex-col gap-6 @4xl:flex-row @4xl:overflow-hidden @4xl:h-full">
+                <div className="h-full w-full @4xl:w-1/2 flex pt-4 flex-col @4xl:overflow-hidden">
                     <div className="overflow-hidden rounded-lg">
                         <img
                             className="rounded-lg w-full h-auto @4xl:max-h-[75vh] object-cover shadow-lg"
@@ -118,40 +119,81 @@ export default function Page() {
                         </TooltipProvider>
                     </div>
                 </div>
-                <div className="@4xl:h-full w-full @4xl:w-1/2 space-y-4 @4xl:overflow-y-auto text-start">
-                    <h1 className="text-3xl font-bold" style={{ viewTransitionName: `artwork-title-${artwork.id}` }}>
-                        {artwork.title}
-                    </h1>
-                    {/* Add more artwork details here */}
-
-                    <Button variant="secondary">
-                        <NavLink to={`/artists/${artwork.artist_id}`} viewTransition style={{ viewTransitionName: `artist-${artwork.artist_id}` }}>
-                            {artwork.artist_title}{" "}
-                        </NavLink>
-                    </Button>
+                <div className="@4xl:h-full w-full @4xl:w-1/2 space-y-4 @4xl:pt-4 @4xl:overflow-y-auto text-start">
+                    <h1 className="text-3xl font-bold">{artwork.title}</h1>
+                    {artwork.artist_title && (
+                        <Button variant="secondary">
+                            <NavLink
+                                to={`/artists/${artwork.artist_id}`}
+                                viewTransition
+                                style={{ viewTransitionName: `artist-${artwork.artist_id}` }}
+                            >
+                                {artwork.artist_title}{" "}
+                            </NavLink>
+                        </Button>
+                    )}
                     <DetailItem label="Date" value={`${artwork.date_start} - ${artwork.date_end}`} />
                     <DetailItem label="Place of Origin" value={artwork.place_of_origin} />
                     <DetailItem label="Medium" value={artwork.medium_display} />
                     <DetailItem label="Dimensions" value={artwork.dimensions} />
-
-                    {texts.length > 0 && <DetailSection title="Documents" />}
-                    {texts.map((text) => (
-                        <Button key={text.id} asChild variant="outline" className="flex items-center gap-2 max-w-full justify-start flex-wrap h-auto">
-                            <a href={text.content} target="_blank" rel="noopener noreferrer" download>
-                                <DownloadIcon />
-                                <span className="line-clamp-1">{text.title}</span>
-                            </a>
-                        </Button>
-                    ))}
-                    {sounds.length > 0 && <DetailSection title="Sounds" />}
-
-                    {sounds.map((sound) => (
-                        <AudioPlayer key={sound.id} sound={sound} />
-                    ))}
-                    <DetailSection title="Description" value={artwork.description} />
-
-                    <DetailList title="Terms" items={artwork.term_titles} />
-                    <DetailList title="Classification Titles" items={artwork.classification_titles} />
+                    <Accordion type="single" collapsible className="w-full" defaultValue="description">
+                        <AccordionItem value="description">
+                            <AccordionTrigger>
+                                <h2 className="text-xl font-semibold">Description</h2>
+                            </AccordionTrigger>
+                            <AccordionContent className="pb-4">
+                                <p className="text-lg" dangerouslySetInnerHTML={{ __html: artwork.description }}></p>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="documents">
+                            <AccordionTrigger>
+                                <h2 className="text-xl font-semibold">Documents</h2>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                {texts.map((text) => (
+                                    <Button
+                                        key={text.id}
+                                        asChild
+                                        variant="outline"
+                                        className="flex items-center gap-2 max-w-full justify-start flex-wrap h-auto my-2"
+                                    >
+                                        <a href={text.content} target="_blank" rel="noopener noreferrer" download>
+                                            <DownloadIcon />
+                                            <span className="line-clamp-1">{text.title}</span>
+                                        </a>
+                                    </Button>
+                                ))}
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="sounds">
+                            <AccordionTrigger>
+                                <h2 className="text-xl font-semibold">Sounds</h2>
+                            </AccordionTrigger>
+                            <AccordionContent className="pb-4">
+                                {sounds.length > 0 ? (
+                                    sounds.map((sound) => <AudioPlayer key={sound.id} sound={sound} />)
+                                ) : (
+                                    <p className="text-lg">No sounds available for this artwork.</p>
+                                )}
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="terms">
+                            <AccordionTrigger>
+                                <h2 className="text-xl font-semibold">Terms</h2>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <DetailList items={artwork.term_titles} />
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="classification_titles">
+                            <AccordionTrigger>
+                                <h2 className="text-xl font-semibold">Classification Titles</h2>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <DetailList items={artwork.classification_titles} />
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </div>
             </div>
         </div>
@@ -172,39 +214,21 @@ function DetailItem({ label, value }: DetailItemProps) {
     );
 }
 
-interface DetailSectionProps {
-    title: string;
-    value?: string;
-}
-
-function DetailSection({ title, value }: DetailSectionProps) {
-    return (
-        <div className="space-y-2">
-            {title && <h2 className="text-xl font-semibold">{title}</h2>}
-            {value && <p className="text-lg" dangerouslySetInnerHTML={{ __html: value }}></p>}
-        </div>
-    );
-}
-
 interface DetailListProps {
-    title: string;
     items?: string[] | number[];
 }
 
-function DetailList({ title, items }: DetailListProps) {
+function DetailList({ items }: DetailListProps) {
     if (!items || items.length === 0) return null;
     return (
-        <div className="space-y-2">
-            <h2 className="text-xl font-semibold">{title}</h2>
-            <div className="flex flex-wrap gap-2">
-                {items.map((item, index) => (
-                    <Button key={index} variant={"outline"}>
-                        <NavLink to={`/artworks?q=${encodeURIComponent(item)}`} viewTransition>
-                            {item}
-                        </NavLink>
-                    </Button>
-                ))}
-            </div>
+        <div className="flex flex-wrap gap-2 mb-4">
+            {items.map((item, index) => (
+                <Button key={index} variant={"outline"}>
+                    <NavLink to={`/artworks?q=${encodeURIComponent(item)}`} viewTransition>
+                        {item}
+                    </NavLink>
+                </Button>
+            ))}
         </div>
     );
 }

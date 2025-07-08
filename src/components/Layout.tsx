@@ -2,7 +2,7 @@ import "@/index.css";
 import { GlobalErrorBoundary } from "@/providers/ErrorBoundary";
 import { ToastProvider } from "@/providers/ToastProvider";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { SidebarInset, SidebarProvider } from "./ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { SiteHeader } from "./site-header";

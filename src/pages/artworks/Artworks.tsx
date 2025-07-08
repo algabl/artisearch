@@ -46,7 +46,7 @@ export default function Artworks() {
                 <SearchBar
                     onSearch={handleSearch}
                     placeholder="Search for artworks..."
-                    className="w-full"w
+                    className="w-full"
                     initialQuery={new URLSearchParams(location.search).get("q") || ""}
                 />
             </div>

@@ -30,7 +30,7 @@ export default function SearchResult({ data, className }: SearchResultProps) {
 
     return (
         <NavLink className={cn("max-w-full", className)} to={`/artworks/${data.id}`} viewTransition prefetch="viewport">
-            <Card className="relative w-100 h-100 max-w-full p-1 sm:p-0 rounded-lg shadow-md overflow-hidden group hover:cursor-pointer transition-transform duration-300 transform hover:scale-105">
+            <Card className="relative w-100 h-100 max-w-full p-1 sm:p-0 rounded-lg shadow-md overflow-hidden group hover:cursor-pointer transition-transform duration-300 transform hover:scale-105 mx-auto">
                 {imageUrl || data.thumbnail?.lqip ? (
                     <img
                         src={imageUrl || data.thumbnail?.lqip}
@@ -47,9 +47,7 @@ export default function SearchResult({ data, className }: SearchResultProps) {
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {/* Dark overlay */}
                 <CardContent className="relative flex flex-col justify-end h-full p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 mb-5">
-                    <h1 className="text-xl font-semibold line-clamp-2">
-                        {data.title}
-                    </h1>
+                    <h1 className="text-xl font-semibold line-clamp-2">{data.title}</h1>
                     <p className="text-sm line-clamp-2">{data.artist_display}</p>
                 </CardContent>
                 <CardFooter

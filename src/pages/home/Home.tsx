@@ -10,7 +10,7 @@ export default function Home() {
     return (
         <div className="overflow-y-auto overflow-x-hidden h-full relative">
             <Carousel
-                className="w-full h-[400px] mb-8 mx-auto"
+                className="w-[80%] h-[400px] mb-8 mx-auto"
                 opts={{
                     loop: true,
                     dragFree: false,

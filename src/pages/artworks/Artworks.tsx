@@ -46,14 +46,14 @@ export default function Artworks() {
                 <SearchBar
                     onSearch={handleSearch}
                     placeholder="Search for artworks..."
-                    className="w-full max-w-md"
+                    className="w-full"w
                     initialQuery={new URLSearchParams(location.search).get("q") || ""}
                 />
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 mb-4">
+            <div className="grid grid-cols-1 @2xl:grid-cols-2 @3xl:grid-cols-3 @4xl:grid-cols-4 @5xl:grid-cols-5 gap-4 mb-4">
                 {artworks.length === 0 ? (
-                    <div className="flex items-center justify-center h-64">
+                    <div className="col-span-full flex items-center justify-center h-64">
                         <p className="text-gray-500">No results found.</p>
                     </div>
                 ) : (
